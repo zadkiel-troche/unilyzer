@@ -6,13 +6,13 @@
 
 La experiencia con cada proveedor queda dispersa entre las dependencias de la UNI. Un proveedor puede cumplir formalmente un contrato y aun así entregar algo técnicamente deficiente.
 
-**unilyzer** ayuda a las unidades de compras y a los administradores de contrato a decidir con quién contratar, consultando en lenguaje natural la *historia clínica* de cada proveedor: contratos, atrasos, multas, reclamos, observaciones técnicas, satisfacción, reincidencias y una evaluación final explicada.
+**unilyzer** ayuda a las unidades de compras y a los administradores de contrato a decidir con quién contratar, consultando en lenguaje natural la _historia clínica_ de cada proveedor: contratos, atrasos, multas, reclamos, observaciones técnicas, satisfacción, reincidencias y una evaluación final explicada.
 
 ## Equipo
 
-- _(completar)_
-- _(completar)_
-- _(completar)_
+- Laura Vega
+- Mauricio Segovia
+- Zadkiel Troche
 
 ## Stack y herramientas de IA
 
@@ -49,9 +49,11 @@ Tests: `php artisan test`.
 ## Estado
 
 **Funciona hoy**
+
 - Setup base: Laravel + React, Sail con PostgreSQL y autenticación.
 
 **En desarrollo**
+
 - Modelo de datos y seeders con 10 proveedores ficticios.
 - Evaluación final explicable (plazos, calidad, incidencias, reincidencia) con semáforo.
 - Búsqueda en lenguaje natural con fallback por palabras clave.
@@ -59,6 +61,7 @@ Tests: `php artisan test`.
 - Carga de dictámenes: extracción de eventos con IA, revisión y guardado.
 
 **Qué sigue**
+
 - Embeddings para búsqueda semántica.
 - Modelo local con Ollama.
 - Carga de PDF.
