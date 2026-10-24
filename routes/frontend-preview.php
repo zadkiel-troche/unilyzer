@@ -96,4 +96,63 @@ Route::middleware(['auth', 'verified'])->group(function () use ($mock, $normaliz
 
         return to_route('proveedores.show', $request->integer('proveedor_id') ?: 4);
     })->name('dictamenes.confirmar');
+
+    Route::get('asistente', fn () => Inertia::render('asistente'))->name('asistente.index');
+
+    // Simula AsistenteService: responde con un texto apto para leer en voz alta.
+    Route::post('asistente', function (Request $request) use ($mock, $normalizar) {
+        $mensaje = $normalizar((string) $request->input('mensaje'));
+        $listado = collect($mock('listado'));
+        $ranking = fn (array $r) => collect($r)->only(['id', 'nombre', 'rubro', 'puntaje', 'semaforo', 'motivo'])->all();
+        usleep(900_000);
+
+        $responder = fn (string $texto, array $proveedores = [], array $eventos = [], string $modo = 'ia') => response()->json([
+            'modo' => $modo,
+            'respuesta' => $texto,
+            'proveedores' => array_map($ranking, $proveedores),
+            'eventos_citados' => $eventos,
+        ]);
+
+        foreach ($mock('historias') as $historia) {
+            $claves = collect(explode(' ', $normalizar($historia['proveedor']['nombre'])))
+                ->filter(fn ($p) => strlen($p) > 5);
+
+            if ($claves->contains(fn ($p) => str_contains($mensaje, $p))) {
+                $resumen = $mock('resumenes')[(string) $historia['proveedor']['id']];
+                $texto = preg_replace('/\s*\(eventos? #[^)]*\)/', '', $resumen['resumen']);
+                $sugerencia = ['contratar' => 'se puede contratar', 'contratar con condiciones' => 'conviene contratar con condiciones', 'evitar' => 'por ahora conviene evitarlo'][$resumen['recomendacion']];
+
+                return $responder(
+                    "{$texto} Según los antecedentes, {$sugerencia}. Su puntaje es {$historia['score']['puntaje']} de 100.",
+                    [$listado->firstWhere('id', $historia['proveedor']['id'])],
+                    $resumen['eventos_citados'],
+                );
+            }
+        }
+
+        foreach ($mock('busquedas') as $busqueda) {
+            if (collect($busqueda['claves'])->every(fn ($clave) => str_contains($mensaje, $clave))) {
+                $r = $busqueda['respuesta'];
+                $resultados = array_slice($r['resultados'], 0, 3);
+                $nombres = collect($resultados)->map(fn ($x) => "{$x['nombre']}, con {$x['puntaje']} puntos")->join('; ', ' y ');
+                $primero = $resultados[0] ?? null;
+
+                return $responder(
+                    'Entendí que buscás '.lcfirst($r['interpretacion']).'. '
+                        .($primero ? 'Encontré '.count($r['resultados']).": {$nombres}. En el caso de {$primero['nombre']}: ".lcfirst($primero['motivo']).'.' : 'No encontré proveedores que cumplan esas condiciones.'),
+                    $resultados,
+                    collect($resultados)->flatMap(fn ($x) => array_column($x['eventos_coincidentes'], 'id'))->take(4)->values()->all(),
+                );
+            }
+        }
+
+        if (preg_match('/\b(hola|buenas|ayuda|que podes|que puedes)\b/', $mensaje)) {
+            return $responder('Hola, soy el asistente de Unilyzer. Podés preguntarme por un proveedor, por ejemplo Mobiliario del Sur, o pedirme cosas como quién cumplió los plazos pero tuvo problemas de calidad, o cuáles son los mejores proveedores de informática.');
+        }
+
+        return $responder(
+            'No encontré antecedentes que respondan esa pregunta. Probá nombrando un proveedor o un rubro, por ejemplo obras, limpieza o informática.',
+            modo: 'palabras_clave',
+        );
+    })->name('asistente.responder');
 });

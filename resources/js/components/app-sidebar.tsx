@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Building2, FileUp, LayoutDashboard } from 'lucide-react';
+import { AudioLines, Building2, FileUp, LayoutDashboard } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -13,6 +13,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as asistente } from '@/routes/asistente';
 import { create as cargarDictamen } from '@/routes/dictamenes';
 import { index as proveedores } from '@/routes/proveedores';
 import type { NavItem } from '@/types';
@@ -27,6 +28,11 @@ const mainNavItems: NavItem[] = [
         title: 'Proveedores',
         href: proveedores(),
         icon: Building2,
+    },
+    {
+        title: 'Hablar con la IA',
+        href: asistente(),
+        icon: AudioLines,
     },
     {
         title: 'Cargar dictamen',

@@ -1,0 +1,9 @@
+export const SUGERENCIAS_VOZ = [
+    '¿Quién cumplió los plazos pero tuvo problemas de calidad?',
+    'Contame la historia de Mobiliario del Sur',
+    '¿Cuáles son los mejores proveedores de informática?',
+    'Proveedores con reclamos repetidos',
+];
+
+/** Cantidad de turnos previos que se envían como contexto. */
+export const TURNOS_DE_CONTEXTO = 6;
