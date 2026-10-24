@@ -223,7 +223,8 @@ export type ConfirmarDictamenPayload = {
     contrato_nuevo: ContratoExtraido | null;
     dependencia_id: number | null;
     documento_origen: string;
-    eventos: EventoExtraido[];
+    /** `extraido_por_ia` es false en los eventos que el usuario agregó a mano. */
+    eventos: (EventoExtraido & { extraido_por_ia: boolean })[];
 };
 
 // --- Props de páginas ---

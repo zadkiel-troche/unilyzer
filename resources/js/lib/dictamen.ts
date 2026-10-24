@@ -6,6 +6,39 @@ import type {
     ExtraccionDictamen,
 } from '@/types';
 
+/** Evento en revisión: lo propuso la IA o lo agregó el usuario a mano. */
+export type EventoBorrador = EventoExtraido & {
+    /** Identificador local estable para React (no se envía). */
+    clave: string;
+    extraido_por_ia: boolean;
+};
+
+let siguienteClave = 0;
+const nuevaClave = () => `evento-${++siguienteClave}`;
+
+export function desdeExtraccion(eventos: EventoExtraido[]): EventoBorrador[] {
+    return eventos.map((e) => ({
+        ...e,
+        clave: nuevaClave(),
+        extraido_por_ia: true,
+    }));
+}
+
+/** Evento en blanco para cargar a mano lo que la IA no detectó. */
+export function eventoManual(): EventoBorrador {
+    return {
+        clave: nuevaClave(),
+        extraido_por_ia: false,
+        tipo: 'observacion_tecnica',
+        fecha: null,
+        dias: null,
+        monto: null,
+        categoria: null,
+        descripcion: '',
+        extracto_fuente: null,
+    };
+}
+
 /** Valor de los selects para "crear uno nuevo". */
 export const NUEVO = 'nuevo';
 
@@ -61,7 +94,7 @@ const aId = (valor: string): number | null =>
 export function armarPayload(
     destino: Destino,
     documento: string,
-    eventos: EventoExtraido[],
+    eventos: EventoBorrador[],
 ): ConfirmarDictamenPayload {
     const proveedorNuevo = destino.proveedor === NUEVO;
     const contratoNuevo = proveedorNuevo || destino.contrato === NUEVO;
@@ -73,7 +106,7 @@ export function armarPayload(
         contrato_nuevo: contratoNuevo ? destino.contratoNuevo : null,
         dependencia_id: aId(destino.dependencia),
         documento_origen: documento.trim(),
-        eventos,
+        eventos: eventos.map(({ clave: _clave, ...evento }) => evento),
     };
 }
 

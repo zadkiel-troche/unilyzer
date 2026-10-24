@@ -1,10 +1,12 @@
 import { Quote, Trash2 } from 'lucide-react';
 import { FormField, FormSelect } from '@/components/form-field';
+import { OrigenBadge } from '@/components/origen-badge';
 import { EventoIcon } from '@/components/proveedores/evento-icon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { CATEGORIAS, LISTA_TIPOS_EVENTO, TIPOS_EVENTO } from '@/lib/eventos';
+import type { EventoBorrador } from '@/lib/dictamen';
 import type { EventoExtraido, TipoEvento } from '@/types';
 
 const SIN_CATEGORIA = 'ninguna';
@@ -20,9 +22,9 @@ const OPCIONES_CATEGORIA = [
 
 type Props = {
     indice: number;
-    evento: EventoExtraido;
+    evento: EventoBorrador;
     errores: Partial<Record<keyof EventoExtraido, string>>;
-    onChange: (evento: EventoExtraido) => void;
+    onChange: (evento: EventoBorrador) => void;
     onQuitar: () => void;
 };
 
@@ -49,6 +51,14 @@ export function EventoEditor({
                 <h3 className="flex-1 text-sm font-semibold">
                     Evento {indice + 1}: {TIPOS_EVENTO[evento.tipo].etiqueta}
                 </h3>
+                {evento.extraido_por_ia ? (
+                    <OrigenBadge origen="ia" etiqueta="Extraído por IA" />
+                ) : (
+                    <OrigenBadge
+                        origen="registrado"
+                        etiqueta="Agregado a mano"
+                    />
+                )}
                 <Button
                     type="button"
                     variant="ghost"
@@ -121,7 +131,11 @@ export function EventoEditor({
                 </FormField>
                 <FormField
                     id={id('extracto')}
-                    label="Extracto del documento (cita textual)"
+                    label={
+                        evento.extraido_por_ia
+                            ? 'Extracto del documento (cita textual)'
+                            : 'Extracto del documento (opcional)'
+                    }
                     error={errores.extracto_fuente}
                     className="sm:col-span-2 lg:col-span-4"
                 >

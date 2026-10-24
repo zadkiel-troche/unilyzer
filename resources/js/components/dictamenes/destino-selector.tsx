@@ -1,4 +1,5 @@
-import { FormField, FormSelect } from '@/components/form-field';
+import { Combobox } from '@/components/combobox';
+import { FormField } from '@/components/form-field';
 import { Input } from '@/components/ui/input';
 import { etiquetaRubro } from '@/lib/eventos';
 import { NUEVO } from '@/lib/dictamen';
@@ -28,24 +29,31 @@ export function DestinoSelector({
     const esProveedorNuevo = destino.proveedor === NUEVO;
     const esContratoNuevo = destino.contrato === NUEVO || esProveedorNuevo;
 
-    const opcionesProveedor = [
-        ...proveedores.map((p) => ({
-            value: String(p.id),
-            label: `${p.nombre} · ${etiquetaRubro(p.rubro)}`,
-        })),
-        { value: NUEVO, label: '+ Proveedor nuevo' },
-    ];
-    const opcionesContrato = [
-        ...(proveedor?.contratos ?? []).map((c) => ({
-            value: String(c.id),
-            label: `${c.codigo ?? 'Sin código'} · ${c.objeto}`,
-        })),
-        { value: NUEVO, label: '+ Contrato nuevo' },
-    ];
+    const opcionesProveedor = proveedores.map((p) => ({
+        value: String(p.id),
+        label: p.nombre,
+        detalle: `${etiquetaRubro(p.rubro)} · ${p.contratos.length} contratos`,
+    }));
+    const opcionesContrato = (proveedor?.contratos ?? []).map((c) => ({
+        value: String(c.id),
+        label: c.codigo ?? 'Sin código',
+        detalle: c.objeto,
+    }));
     const opcionesDependencia = dependencias.map((d) => ({
         value: String(d.id),
-        label: d.sigla ? `${d.nombre} (${d.sigla})` : d.nombre,
+        label: d.nombre,
+        detalle: d.sigla ?? undefined,
     }));
+
+    const elegirProveedor = (valor: string, consulta: string) =>
+        set({
+            proveedor: valor,
+            contrato: valor === NUEVO ? NUEVO : '',
+            proveedorNuevo:
+                valor === NUEVO && consulta
+                    ? { ...destino.proveedorNuevo, nombre: consulta }
+                    : destino.proveedorNuevo,
+        });
 
     return (
         <div className="grid gap-4 md:grid-cols-3">
@@ -54,17 +62,13 @@ export function DestinoSelector({
                 label="Proveedor"
                 error={errores.proveedor_id}
             >
-                <FormSelect
+                <Combobox
                     id="destino-proveedor"
                     value={destino.proveedor}
-                    onChange={(v) =>
-                        set({
-                            proveedor: v,
-                            contrato: v === NUEVO ? NUEVO : '',
-                        })
-                    }
+                    onChange={elegirProveedor}
                     opciones={opcionesProveedor}
-                    placeholder="Elegí el proveedor"
+                    accion={{ value: NUEVO, label: 'Proveedor nuevo' }}
+                    placeholder="Buscá por nombre o rubro"
                     invalid={!!errores.proveedor_id}
                 />
             </FormField>
@@ -73,20 +77,18 @@ export function DestinoSelector({
                 label="Contrato"
                 error={errores.contrato_id}
             >
-                <FormSelect
+                <Combobox
                     id="destino-contrato"
                     value={esProveedorNuevo ? NUEVO : destino.contrato}
                     onChange={(v) => set({ contrato: v })}
-                    opciones={
-                        esProveedorNuevo
-                            ? [{ value: NUEVO, label: '+ Contrato nuevo' }]
-                            : opcionesContrato
-                    }
+                    opciones={esProveedorNuevo ? [] : opcionesContrato}
+                    accion={{ value: NUEVO, label: 'Contrato nuevo' }}
                     placeholder={
                         destino.proveedor
-                            ? 'Elegí el contrato'
+                            ? 'Buscá por código u objeto'
                             : 'Primero elegí el proveedor'
                     }
+                    disabled={!destino.proveedor}
                     invalid={!!errores.contrato_id}
                 />
             </FormField>
@@ -95,12 +97,12 @@ export function DestinoSelector({
                 label="Dependencia solicitante"
                 error={errores.dependencia_id}
             >
-                <FormSelect
+                <Combobox
                     id="destino-dependencia"
                     value={destino.dependencia}
                     onChange={(v) => set({ dependencia: v })}
                     opciones={opcionesDependencia}
-                    placeholder="Elegí la dependencia"
+                    placeholder="Buscá por nombre o sigla"
                     invalid={!!errores.dependencia_id}
                 />
             </FormField>

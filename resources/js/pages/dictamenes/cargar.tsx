@@ -1,11 +1,10 @@
 import { Head, router } from '@inertiajs/react';
-import { Check, FileSearch, RotateCcw, Save } from 'lucide-react';
+import { Check, FileSearch, Plus, RotateCcw, Save } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DestinoSelector } from '@/components/dictamenes/destino-selector';
 import { DictamenInput } from '@/components/dictamenes/dictamen-input';
 import { EventoEditor } from '@/components/dictamenes/evento-editor';
-import { OrigenBadge } from '@/components/origen-badge';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,17 +18,15 @@ import { Spinner } from '@/components/ui/spinner';
 import { useAnalizarDictamen } from '@/hooks/use-analizar-dictamen';
 import {
     armarPayload,
+    desdeExtraccion,
     destinoSugerido,
     erroresPorEvento,
+    eventoManual,
 } from '@/lib/dictamen';
-import type { Destino } from '@/lib/dictamen';
+import type { Destino, EventoBorrador } from '@/lib/dictamen';
 import { cn } from '@/lib/utils';
 import { confirmar, create } from '@/routes/dictamenes';
-import type {
-    CargarDictamenProps,
-    EventoExtraido,
-    ExtraccionDictamen,
-} from '@/types';
+import type { CargarDictamenProps, ExtraccionDictamen } from '@/types';
 
 const PASOS = [
     'Pegar el dictamen',
@@ -128,7 +125,7 @@ function ResumenExtraccion({ extraccion }: { extraccion: ExtraccionDictamen }) {
 export default function CargarDictamen(props: CargarDictamenProps) {
     const [texto, setTexto] = useState('');
     const [documento, setDocumento] = useState('');
-    const [eventos, setEventos] = useState<EventoExtraido[]>([]);
+    const [eventos, setEventos] = useState<EventoBorrador[]>([]);
     const [destino, setDestino] = useState<Destino | null>(null);
     const [errores, setErrores] = useState<Record<string, string>>({});
     const [guardando, setGuardando] = useState(false);
@@ -144,12 +141,12 @@ export default function CargarDictamen(props: CargarDictamenProps) {
             return;
         }
 
-        setEventos(resultado.eventos);
+        setEventos(desdeExtraccion(resultado.eventos));
         setDestino(destinoSugerido(resultado, props));
         setErrores({});
 
         if (resultado.eventos.length === 0) {
-            toast.info('La IA no encontró eventos en este documento.');
+            toast.info('La IA no encontró eventos. Podés agregarlos a mano.');
         }
     };
 
@@ -160,13 +157,29 @@ export default function CargarDictamen(props: CargarDictamenProps) {
         setErrores({});
     };
 
-    const actualizarEvento = (indice: number, evento: EventoExtraido) =>
+    const actualizarEvento = (evento: EventoBorrador) =>
         setEventos((actuales) =>
-            actuales.map((e, i) => (i === indice ? evento : e)),
+            actuales.map((e) => (e.clave === evento.clave ? evento : e)),
         );
 
-    const quitarEvento = (indice: number) =>
-        setEventos((actuales) => actuales.filter((_, i) => i !== indice));
+    const quitarEvento = (clave: string) =>
+        setEventos((actuales) => actuales.filter((e) => e.clave !== clave));
+
+    const agregarEvento = () => {
+        const indice = eventos.length;
+        setEventos((actuales) => [...actuales, eventoManual()]);
+
+        // Lleva el foco a la descripción del evento nuevo cuando ya está en pantalla.
+        requestAnimationFrame(() => {
+            const campo = document.getElementById(
+                `evento-${indice}-descripcion`,
+            );
+            campo?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            campo?.focus({ preventScroll: true });
+        });
+    };
+
+    const deIa = eventos.filter((e) => e.extraido_por_ia).length;
 
     const guardar = () => {
         if (!destino) {
@@ -247,14 +260,18 @@ export default function CargarDictamen(props: CargarDictamenProps) {
                             <CardHeader className="flex-row items-start justify-between gap-2">
                                 <div className="space-y-1.5">
                                     <CardTitle className="text-base">
-                                        2. Eventos extraídos
+                                        2. Eventos del documento
                                     </CardTitle>
                                     <CardDescription>
                                         Revisá cada evento contra su extracto.
-                                        Podés editarlo o quitarlo.
+                                        Podés editarlo, quitarlo o agregar lo
+                                        que la IA no detectó.
                                     </CardDescription>
                                 </div>
-                                <OrigenBadge origen="ia" />
+                                <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+                                    {deIa} de la IA · {eventos.length - deIa} a
+                                    mano
+                                </span>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <ResumenExtraccion extraccion={extraccion} />
@@ -262,22 +279,32 @@ export default function CargarDictamen(props: CargarDictamenProps) {
                                     <ol className="space-y-3">
                                         {eventos.map((evento, i) => (
                                             <EventoEditor
-                                                key={i}
+                                                key={evento.clave}
                                                 indice={i}
                                                 evento={evento}
                                                 errores={erroresEvento[i] ?? {}}
-                                                onChange={(e) =>
-                                                    actualizarEvento(i, e)
+                                                onChange={actualizarEvento}
+                                                onQuitar={() =>
+                                                    quitarEvento(evento.clave)
                                                 }
-                                                onQuitar={() => quitarEvento(i)}
                                             />
                                         ))}
                                     </ol>
                                 ) : (
                                     <p className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-                                        No quedan eventos para guardar.
+                                        No hay eventos para guardar. Agregá uno
+                                        a mano si el documento lo menciona.
                                     </p>
                                 )}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={agregarEvento}
+                                    className="w-full border-dashed"
+                                >
+                                    <Plus />
+                                    Agregar evento a mano
+                                </Button>
                             </CardContent>
                         </Card>
 
@@ -302,8 +329,8 @@ export default function CargarDictamen(props: CargarDictamenProps) {
                                 />
                                 <div className="flex flex-col-reverse gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
                                     <p className="text-xs text-muted-foreground">
-                                        Los eventos se guardan marcados como
-                                        “Extraído por IA” junto a su extracto.
+                                        Cada evento se guarda con su origen:
+                                        “Extraído por IA” o “Agregado a mano”.
                                     </p>
                                     <Button
                                         onClick={guardar}
