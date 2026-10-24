@@ -167,12 +167,15 @@ Una migración: `create_historial_proveedores_tables`.
 { "mensaje": "¿Qué pasó con la Constructora Paraná?", "historial": [{ "rol": "usuario|asistente", "texto": "..." }] }
 // Respuesta
 { "modo": "ia|palabras_clave", "respuesta": "texto apto para leer en voz alta",
-  "proveedores": [{ "id", "nombre", "rubro", "puntaje", "semaforo", "motivo" }], "eventos_citados": [12] }
+  "proveedores": [{ "id", "nombre", "rubro", "puntaje", "semaforo", "motivo" }],
+  "dependencias": [{ "id", "nombre", "sigla", "contratos", "proveedores", "monto_total", "por_estado": { "en_ejecucion", "finalizado", "rescindido" } }],
+  "eventos_citados": [12] }
 ```
 
 - La IA recibe una ficha compacta de todos los proveedores (el dataset es chico) y responde en una sola llamada: importa la latencia en voz.
 - `respuesta`: 2-4 oraciones cortas, sin markdown, ids ni símbolos. Los ids devueltos se validan contra la base.
-- Sin IA: responde con la búsqueda por palabras clave (`modo: "palabras_clave"`).
+- **Preguntas de conteo** ("¿qué dependencias tienen más contratos?", "¿cuál tiene menos proveedores?", "¿cuántos contratos hay por estado?"): la IA recibe `EstadisticasService` (por dependencia y por estado) y devuelve `dependencias_ids`; la UI muestra la tabla con los números.
+- Sin IA: responde con la búsqueda por palabras clave (`modo: "palabras_clave"`) y detecta las preguntas de conteo con reglas simples.
 
 ## 6. Rutas y controladores
 

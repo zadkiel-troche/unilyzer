@@ -1,5 +1,6 @@
 import { MessagesSquare } from 'lucide-react';
 import { OrigenBadge } from '@/components/origen-badge';
+import { DependenciasCitadas } from '@/components/asistente/dependencias-citadas';
 import { ProveedoresCitados } from '@/components/asistente/proveedores-citados';
 import {
     Sheet,
@@ -72,6 +73,12 @@ export function Transcripcion({ mensajes }: { mensajes: Mensaje[] }) {
                             {m.respuesta && (
                                 <div className="flex flex-col items-start gap-2">
                                     <OrigenBadge origen="ia" />
+                                    <DependenciasCitadas
+                                        dependencias={
+                                            m.respuesta.dependencias ?? []
+                                        }
+                                        sobreOscuro={false}
+                                    />
                                     {m.respuesta.proveedores.length > 0 && (
                                         <div className="superficie-marca rounded-xl p-2">
                                             <ProveedoresCitados

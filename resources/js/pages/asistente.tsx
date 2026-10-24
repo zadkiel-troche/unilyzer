@@ -3,6 +3,7 @@ import { Info, MicOff } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { ControlesVoz } from '@/components/asistente/controles-voz';
 import { EntradaTexto } from '@/components/asistente/entrada-texto';
+import { DependenciasCitadas } from '@/components/asistente/dependencias-citadas';
 import { ProveedoresCitados } from '@/components/asistente/proveedores-citados';
 import { Subtitulos } from '@/components/asistente/subtitulos';
 import { Transcripcion } from '@/components/asistente/transcripcion';
@@ -24,10 +25,13 @@ export default function Asistente() {
 
     const ultimaPregunta = mensajes.findLast((m) => m.rol === 'usuario');
     const ultimaRespuesta = mensajes.findLast((m) => m.rol === 'asistente');
-    const proveedores =
-        estado !== 'escuchando' && estado !== 'pensando'
-            ? (ultimaRespuesta?.respuesta?.proveedores ?? [])
-            : [];
+    const mostrarFuentes = estado !== 'escuchando' && estado !== 'pensando';
+    const proveedores = mostrarFuentes
+        ? (ultimaRespuesta?.respuesta?.proveedores ?? [])
+        : [];
+    const dependencias = mostrarFuentes
+        ? (ultimaRespuesta?.respuesta?.dependencias ?? [])
+        : [];
     const sinConversacion = mensajes.length === 0 && estado === 'inactivo';
 
     return (
@@ -66,6 +70,10 @@ export default function Asistente() {
                         <ProveedoresCitados
                             key={ultimaRespuesta?.id}
                             proveedores={proveedores}
+                        />
+                        <DependenciasCitadas
+                            key={`dep-${ultimaRespuesta?.id}`}
+                            dependencias={dependencias}
                         />
 
                         {sinConversacion && (

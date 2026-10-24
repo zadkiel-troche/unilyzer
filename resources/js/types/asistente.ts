@@ -1,4 +1,8 @@
-import type { ModoBusqueda, ProveedorRanking } from './proveedores';
+import type {
+    EstadoContrato,
+    ModoBusqueda,
+    ProveedorRanking,
+} from './proveedores';
 
 /**
  * Contrato de POST /asistente (pendiente de agregar a CLAUDE.md).
@@ -18,9 +22,22 @@ export type AsistenteSolicitud = {
     historial: MensajeHistorial[];
 };
 
+/** Fila de estadísticas de una dependencia (EstadisticasService). */
+export type DependenciaEstadistica = {
+    id: number;
+    nombre: string;
+    sigla: string | null;
+    contratos: number;
+    proveedores: number;
+    monto_total: number;
+    por_estado: Record<EstadoContrato, number>;
+};
+
 export type AsistenteRespuesta = {
     modo: ModoBusqueda;
     respuesta: string;
     proveedores: ProveedorRanking[];
+    /** Dependencias mencionadas en preguntas de conteo, en el orden en que se nombran. */
+    dependencias: DependenciaEstadistica[];
     eventos_citados: number[];
 };
