@@ -1,44 +1,82 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import AppLogoIcon from '@/components/app-logo-icon';
+import { PILARES } from '@/components/brand-pillars';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
+
+function Wordmark({ className }: { className?: string }) {
+    return (
+        <Link href={home()} className={className}>
+            <AppLogoIcon className="size-8" />
+            <span className="text-xl font-semibold tracking-tight">
+                Unilyzer
+            </span>
+        </Link>
+    );
+}
 
 export default function AuthSplitLayout({
     children,
     title,
     description,
 }: AuthLayoutProps) {
-    const { name } = usePage().props;
-
     return (
-        <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-                <div className="absolute inset-0 bg-zinc-900" />
-                <Link
-                    href={home()}
-                    className="relative z-20 flex items-center text-lg font-medium"
-                >
-                    <AppLogoIcon className="mr-2 size-8 fill-current text-white" />
-                    {name}
-                </Link>
-            </div>
-            <div className="w-full lg:p-8">
-                <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-                    <Link
-                        href={home()}
-                        className="relative z-20 flex items-center justify-center lg:hidden"
-                    >
-                        <AppLogoIcon className="h-10 fill-current text-black sm:h-12" />
-                    </Link>
-                    <div className="flex flex-col items-start gap-2 text-left sm:items-center sm:text-center">
-                        <h1 className="text-xl font-medium">{title}</h1>
-                        <p className="text-sm text-balance text-muted-foreground">
-                            {description}
+        <div className="grid min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <aside className="relative hidden flex-col justify-between overflow-hidden bg-brand-navy p-10 text-white lg:flex">
+                <div
+                    className="pointer-events-none absolute -bottom-40 -left-40 size-[34rem] rounded-full border-[48px] border-white/[0.04]"
+                    aria-hidden
+                />
+                <Wordmark className="relative flex items-center gap-2.5" />
+                <div className="relative max-w-md space-y-8">
+                    <div className="space-y-3">
+                        <p className="text-4xl leading-tight font-semibold tracking-tight">
+                            Cada experiencia cuenta.
                         </p>
+                        <p className="text-white/70">
+                            Plataforma inteligente de historial y evaluación de
+                            proveedores de la UNI.
+                        </p>
+                    </div>
+                    <ul className="space-y-4">
+                        {PILARES.map(({ icono: Icono, titulo, texto }) => (
+                            <li key={titulo} className="flex gap-3">
+                                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-white/10 text-brand-teal">
+                                    <Icono className="size-4" aria-hidden />
+                                </span>
+                                <span className="text-sm">
+                                    <span className="block font-medium">
+                                        {titulo}
+                                    </span>
+                                    <span className="text-white/65">
+                                        {texto}
+                                    </span>
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <p className="relative text-xs text-white/50">
+                    Demo con proveedores ficticios · EncarBuild Night 2026
+                </p>
+            </aside>
+
+            <main className="flex flex-col items-center justify-center gap-8 bg-background px-6 py-10">
+                <Wordmark className="flex items-center gap-2 text-brand-navy lg:hidden dark:text-white" />
+                <div className="w-full max-w-sm space-y-6">
+                    <div className="space-y-1.5">
+                        <h1 className="text-2xl font-semibold tracking-tight">
+                            {title}
+                        </h1>
+                        {description && (
+                            <p className="text-sm text-balance text-muted-foreground">
+                                {description}
+                            </p>
+                        )}
                     </div>
                     {children}
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
