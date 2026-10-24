@@ -1,5 +1,4 @@
 import { Link } from '@inertiajs/react';
-import { AudioLines, Building2, FileUp, LayoutDashboard } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -13,33 +12,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { index as asistente } from '@/routes/asistente';
-import { create as cargarDictamen } from '@/routes/dictamenes';
-import { index as proveedores } from '@/routes/proveedores';
-import type { NavItem } from '@/types';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Panel',
-        href: dashboard(),
-        icon: LayoutDashboard,
-    },
-    {
-        title: 'Proveedores',
-        href: proveedores(),
-        icon: Building2,
-    },
-    {
-        title: 'Hablar con la IA',
-        href: asistente(),
-        icon: AudioLines,
-    },
-    {
-        title: 'Cargar dictamen',
-        href: cargarDictamen(),
-        icon: FileUp,
-    },
-];
+import { NAVEGACION_PRINCIPAL } from '@/lib/navegacion';
 
 export function AppSidebar() {
     return (
@@ -57,7 +30,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={NAVEGACION_PRINCIPAL} />
             </SidebarContent>
 
             <SidebarFooter>
