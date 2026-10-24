@@ -12,18 +12,27 @@
 */
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
-$mock = fn (string $archivo): array => json_decode(
-    file_get_contents(resource_path("js/mocks/{$archivo}.json")),
-    true,
-);
+$mock = fn (string $archivo): array => File::json(resource_path("js/mocks/{$archivo}.json"));
+
+/** Indica si el texto contiene todas las claves de una búsqueda de ejemplo. */
+$contieneTodas = function (string $texto, array $claves): bool {
+    foreach ($claves as $clave) {
+        if (! is_string($clave) || ! str_contains($texto, $clave)) {
+            return false;
+        }
+    }
+
+    return true;
+};
 
 $normalizar = fn (string $texto): string => Str::of($texto)->ascii()->lower()->toString();
 
-Route::middleware(['auth', 'verified'])->group(function () use ($mock, $normalizar) {
+Route::middleware(['auth', 'verified'])->group(function () use ($mock, $normalizar, $contieneTodas) {
     Route::get('dashboard', fn () => Inertia::render('dashboard', $mock('dashboard')))
         ->name('dashboard');
 
@@ -44,18 +53,18 @@ Route::middleware(['auth', 'verified'])->group(function () use ($mock, $normaliz
         return response()->json($mock('resumenes')[(string) $proveedor] ?? abort(404));
     })->name('proveedores.resumen');
 
-    Route::post('busqueda', function (Request $request) use ($mock, $normalizar) {
+    Route::post('busqueda', function (Request $request) use ($mock, $normalizar, $contieneTodas) {
         $q = $normalizar((string) $request->input('q'));
         usleep(700_000);
 
         foreach ($mock('busquedas') as $busqueda) {
-            if (collect($busqueda['claves'])->every(fn ($clave) => str_contains($q, $clave))) {
+            if ($contieneTodas($q, $busqueda['claves'])) {
                 return response()->json($busqueda['respuesta']);
             }
         }
 
         // Simula el fallback por palabras clave sobre nombre, rubro, objeto y descripción.
-        $palabras = collect(preg_split('/\W+/', $q))->filter(fn ($p) => strlen($p) > 3);
+        $palabras = Str::of($q)->split('/\W+/')->filter(fn (string $p) => strlen($p) > 3);
         $resultados = collect($mock('historias'))
             ->filter(function ($h) use ($palabras, $normalizar) {
                 $texto = $normalizar(implode(' ', [
@@ -100,7 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () use ($mock, $normaliz
     Route::get('asistente', fn () => Inertia::render('asistente'))->name('asistente.index');
 
     // Simula AsistenteService: responde con un texto apto para leer en voz alta.
-    Route::post('asistente', function (Request $request) use ($mock, $normalizar) {
+    Route::post('asistente', function (Request $request) use ($mock, $normalizar, $contieneTodas) {
         $mensaje = $normalizar((string) $request->input('mensaje'));
         $listado = collect($mock('listado'));
         $ranking = fn (array $r) => collect($r)->only(['id', 'nombre', 'rubro', 'puntaje', 'semaforo', 'motivo'])->all();
@@ -131,7 +140,7 @@ Route::middleware(['auth', 'verified'])->group(function () use ($mock, $normaliz
         }
 
         foreach ($mock('busquedas') as $busqueda) {
-            if (collect($busqueda['claves'])->every(fn ($clave) => str_contains($mensaje, $clave))) {
+            if ($contieneTodas($mensaje, $busqueda['claves'])) {
                 $r = $busqueda['respuesta'];
                 $resultados = array_slice($r['resultados'], 0, 3);
                 $nombres = collect($resultados)->map(fn ($x) => "{$x['nombre']}, con {$x['puntaje']} puntos")->join('; ', ' y ');

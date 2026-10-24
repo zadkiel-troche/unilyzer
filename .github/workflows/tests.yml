@@ -31,8 +31,16 @@ jobs:
         with:
           node-version: '22'
 
+      # El .env de ejemplo apunta al Postgres de Sail (host "pgsql"), que no
+      # existe en el runner: el setup migra contra SQLite. Los tests usan
+      # SQLite en memoria por phpunit.xml.
       - name: Setup Application
-        run: composer setup
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          touch database/database.sqlite
+          composer setup
 
       - name: Run CI Checks
         run: composer ci:check
