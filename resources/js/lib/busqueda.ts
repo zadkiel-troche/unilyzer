@@ -22,6 +22,7 @@ type Formateador<K extends keyof FiltrosBusqueda> = (
 
 const FORMATEADORES: { [K in keyof FiltrosBusqueda]: Formateador<K> } = {
     texto: (v) => `Texto: “${v}”`,
+    nombre: (v) => `Nombre: “${v}”`,
     rubro: (v) => `Rubro: ${etiquetaRubro(v)}`,
     dependencia: (v) => `Dependencia: ${v}`,
     tipos_evento: (v) =>

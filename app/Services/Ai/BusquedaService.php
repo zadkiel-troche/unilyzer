@@ -20,7 +20,7 @@ use Illuminate\Support\Collection;
  * @phpstan-import-type Score from ScoringService
  *
  * @phpstan-type Filtros array{
- *     texto: string|null, rubro: string|null, dependencia: string|null,
+ *     texto: string|null, nombre: string|null, rubro: string|null, dependencia: string|null,
  *     tipos_evento: list<string>|null, categoria: string|null, desde: string|null,
  *     hasta: string|null, sin_atrasos: bool|null, satisfaccion_max: float|null,
  *     puntaje_min: int|null, puntaje_max: int|null, solo_reincidentes: bool|null,
@@ -83,9 +83,18 @@ class BusquedaService
         $catalogo = $this->catalogo();
         $respuesta = $this->ia->json($this->prompt($catalogo), $consulta, 'busqueda_proveedores', $this->esquema($catalogo));
 
+        $filtros = $this->validar(is_array($respuesta['filtros'] ?? null) ? $respuesta['filtros'] : [], $catalogo);
+
+        if ($filtros['nombre'] === null) {
+            $inferido = $this->inferirNombre($consulta, $catalogo);
+            if ($inferido !== null) {
+                $filtros['nombre'] = $inferido;
+            }
+        }
+
         return [
             'interpretacion' => is_string($respuesta['interpretacion'] ?? null) ? $respuesta['interpretacion'] : $consulta,
-            'filtros' => $this->validar(is_array($respuesta['filtros'] ?? null) ? $respuesta['filtros'] : [], $catalogo),
+            'filtros' => $filtros,
         ];
     }
 
@@ -122,6 +131,10 @@ class BusquedaService
      */
     private function evaluar(Proveedor $proveedor, array $filtros): ?array
     {
+        if ($filtros['nombre'] !== null && ! $this->nombreCoincide($proveedor->nombre, $filtros['nombre'])) {
+            return null;
+        }
+
         if ($filtros['rubro'] !== null && $proveedor->rubro !== $filtros['rubro']) {
             return null;
         }
@@ -133,9 +146,11 @@ class BusquedaService
         }
 
         $todos = $proveedor->contratos->flatMap(fn (Contrato $c) => $c->eventos);
+        $textoComoNombre = $filtros['texto'] !== null && $this->nombreCoincide($proveedor->nombre, $filtros['texto']);
         $filtraEventos = $filtros['tipos_evento'] !== null || $filtros['categoria'] !== null
-            || $filtros['desde'] !== null || $filtros['hasta'] !== null || $filtros['texto'] !== null;
-        $coincidentes = $todos->filter(fn (Evento $e) => $this->eventoCoincide($e, $filtros))->values();
+            || $filtros['desde'] !== null || $filtros['hasta'] !== null
+            || ($filtros['texto'] !== null && ! $textoComoNombre);
+        $coincidentes = $todos->filter(fn (Evento $e) => $this->eventoCoincide($e, $filtros, $textoComoNombre))->values();
 
         if ($filtraEventos && $coincidentes->isEmpty()) {
             return null;
@@ -180,7 +195,7 @@ class BusquedaService
     /**
      * @param  Filtros  $filtros
      */
-    private function eventoCoincide(Evento $evento, array $filtros): bool
+    private function eventoCoincide(Evento $evento, array $filtros, bool $textoComoNombre = false): bool
     {
         $fecha = $evento->fecha?->toDateString();
 
@@ -188,10 +203,58 @@ class BusquedaService
             && ($filtros['categoria'] === null || $evento->categoria === $filtros['categoria'])
             && ($filtros['desde'] === null || ($fecha !== null && $fecha >= $filtros['desde']))
             && ($filtros['hasta'] === null || ($fecha !== null && $fecha <= $filtros['hasta']))
-            && ($filtros['texto'] === null || str_contains(
+            && ($filtros['texto'] === null || $textoComoNombre || str_contains(
                 BusquedaPorPalabrasClave::normalizar($evento->descripcion),
                 BusquedaPorPalabrasClave::normalizar($filtros['texto']),
             ));
+    }
+
+    private function nombreCoincide(string $nombreProveedor, string $fragmento): bool
+    {
+        return str_contains(
+            BusquedaPorPalabrasClave::normalizar($nombreProveedor),
+            BusquedaPorPalabrasClave::normalizar($fragmento),
+        );
+    }
+
+    /**
+     * Si la IA no devolvió nombre, detecta el token de la consulta que mejor identifica proveedores.
+     *
+     * @param  array{rubros: list<string>, dependencias: list<string>, nombres: list<string>}  $catalogo
+     */
+    private function inferirNombre(string $consulta, array $catalogo): ?string
+    {
+        $rubrosNorm = collect($catalogo['rubros'])
+            ->flatMap(fn (string $rubro) => [
+                BusquedaPorPalabrasClave::normalizar($rubro),
+                BusquedaPorPalabrasClave::normalizar(str_replace('_', ' ', $rubro)),
+            ])
+            ->unique()
+            ->all();
+
+        $palabras = $this->palabrasClave->palabras($consulta)
+            ->reject(fn (string $p) => in_array($p, $rubrosNorm, true));
+
+        if ($palabras->isEmpty()) {
+            return null;
+        }
+
+        $proveedores = $this->presenter->todos();
+        $mejor = null;
+        $menorCantidad = PHP_INT_MAX;
+
+        foreach ($palabras as $palabra) {
+            $cantidad = $proveedores->filter(
+                fn (Proveedor $p) => str_contains(BusquedaPorPalabrasClave::normalizar($p->nombre), $palabra),
+            )->count();
+
+            if ($cantidad > 0 && $cantidad < $menorCantidad) {
+                $menorCantidad = $cantidad;
+                $mejor = $palabra;
+            }
+        }
+
+        return $mejor;
     }
 
     /**
@@ -241,7 +304,7 @@ class BusquedaService
      * Descarta lo que no esté en los catálogos reales.
      *
      * @param  array<string, mixed>  $f
-     * @param  array{rubros: list<string>, dependencias: list<string>}  $catalogo
+     * @param  array{rubros: list<string>, dependencias: list<string>, nombres: list<string>}  $catalogo
      * @return Filtros
      */
     public function validar(array $f, array $catalogo): array
@@ -260,8 +323,14 @@ class BusquedaService
             ? array_values(array_intersect($f['tipos_evento'], Evento::TIPOS))
             : [];
 
+        $nombre = $texto('nombre');
+        if ($nombre !== null && $this->fragmentoEsRubro($nombre, $catalogo['rubros'])) {
+            $nombre = null;
+        }
+
         return [
             'texto' => $texto('texto'),
+            'nombre' => $nombre,
             'rubro' => in_array($f['rubro'] ?? null, $catalogo['rubros'], true) ? $f['rubro'] : null,
             'dependencia' => in_array($f['dependencia'] ?? null, $catalogo['dependencias'], true) ? $f['dependencia'] : null,
             'tipos_evento' => $tipos === [] ? null : $tipos,
@@ -281,18 +350,36 @@ class BusquedaService
     /**
      * Valores reales de la base que la IA puede usar.
      *
-     * @return array{rubros: list<string>, dependencias: list<string>}
+     * @return array{rubros: list<string>, dependencias: list<string>, nombres: list<string>}
      */
     public function catalogo(): array
     {
         return [
             'rubros' => array_values(Proveedor::query()->distinct()->orderBy('rubro')->pluck('rubro')->all()),
             'dependencias' => array_values(Dependencia::query()->orderBy('nombre')->pluck('nombre')->all()),
+            'nombres' => array_values(Proveedor::query()->orderBy('nombre')->pluck('nombre')->all()),
         ];
     }
 
     /**
-     * @param  array{rubros: list<string>, dependencias: list<string>}  $catalogo
+     * @param  list<string>  $rubros
+     */
+    private function fragmentoEsRubro(string $fragmento, array $rubros): bool
+    {
+        $norm = BusquedaPorPalabrasClave::normalizar($fragmento);
+
+        foreach ($rubros as $rubro) {
+            if ($norm === BusquedaPorPalabrasClave::normalizar($rubro)
+                || $norm === BusquedaPorPalabrasClave::normalizar(str_replace('_', ' ', $rubro))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param  array{rubros: list<string>, dependencias: list<string>, nombres: list<string>}  $catalogo
      */
     private function prompt(array $catalogo): string
     {
@@ -306,6 +393,7 @@ class BusquedaService
         Valores permitidos (usá exactamente estos textos; si no corresponde ninguno, null):
         - rubro: {$lista($catalogo['rubros'])}
         - dependencia: {$lista($catalogo['dependencias'])}
+        - proveedores registrados (para el filtro nombre): {$lista($catalogo['nombres'])}
         - tipos_evento: {$lista(Evento::TIPOS)}
         - categoria: {$lista(Evento::CATEGORIAS)}
         - orden: puntaje_asc (peores primero), puntaje_desc (mejores primero), incidencias_desc (más incidencias primero)
@@ -321,13 +409,16 @@ class BusquedaService
         - "repetidos", "reincidentes", "varias veces" → solo_reincidentes true.
         - "los mejores" → orden puntaje_desc; "los peores" o "más problemáticos" → puntaje_asc.
         - "desde 2024" → desde "2024-01-01". Fechas siempre en formato YYYY-MM-DD.
-        - texto: solo para palabras concretas a buscar en las descripciones que no encajen en otro filtro; si no, null.
+        - nombre: fragmento del nombre de un proveedor (completo o parcial, por ejemplo "Paraná", "TecnoSur", "Mobiliario del Sur").
+          Usalo cuando la pregunta nombra o apunta a un proveedor concreto; se puede combinar con otros filtros (por ejemplo "multas de Paraná" → nombre "Paraná" y tipos_evento ["multa"]).
+          No uses nombre si solo mencionan un rubro ("informática", "obras").
+        - texto: solo para palabras concretas a buscar en las descripciones de eventos que no encajen en otro filtro; no uses texto para nombres de proveedor (usá nombre).
         - Si un filtro no se menciona, null. limite: 10 salvo que pidan otra cantidad.
         PROMPT;
     }
 
     /**
-     * @param  array{rubros: list<string>, dependencias: list<string>}  $catalogo
+     * @param  array{rubros: list<string>, dependencias: list<string>, nombres: list<string>}  $catalogo
      * @return array<string, mixed>
      */
     private function esquema(array $catalogo): array
@@ -336,6 +427,7 @@ class BusquedaService
             'interpretacion' => Esquema::texto(),
             'filtros' => Esquema::objeto([
                 'texto' => Esquema::texto(nullable: true),
+                'nombre' => Esquema::texto(nullable: true),
                 'rubro' => Esquema::enum($catalogo['rubros'], nullable: true),
                 'dependencia' => Esquema::enum($catalogo['dependencias'], nullable: true),
                 'tipos_evento' => Esquema::lista(Esquema::enum(Evento::TIPOS), nullable: true),
