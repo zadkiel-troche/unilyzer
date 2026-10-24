@@ -32,5 +32,7 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <!-- Los tests nunca llaman a OpenAI: usan Http::fake. -->
+        <env name="OPENAI_API_KEY" value=""/>
     </php>
 </phpunit>
