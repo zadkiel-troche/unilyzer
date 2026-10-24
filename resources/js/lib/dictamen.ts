@@ -58,6 +58,23 @@ const normalizar = (texto: string) =>
         .toLowerCase()
         .trim();
 
+/** Destino en blanco para cargar eventos a mano, sin análisis de IA. */
+export function destinoVacio(): Destino {
+    return {
+        proveedor: '',
+        proveedorNuevo: { nombre: '', rubro: '' },
+        contrato: '',
+        contratoNuevo: {
+            codigo: null,
+            objeto: '',
+            monto: null,
+            fecha_inicio: null,
+            fecha_fin_pactada: null,
+        },
+        dependencia: '',
+    };
+}
+
 /** Preselecciona proveedor, contrato y dependencia a partir de lo que detectó la IA. */
 export function destinoSugerido(
     extraccion: ExtraccionDictamen,
