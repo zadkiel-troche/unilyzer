@@ -105,4 +105,36 @@ class BusquedaServiceTest extends TestCase
             ->assertJsonPath('modo', 'palabras_clave')
             ->assertJsonPath('resultados.0.nombre', 'Mobiliario del Sur');
     }
+
+    public function test_busca_por_nombre_parcial_con_filtro_de_la_ia()
+    {
+        $r = $this->buscar('Constructora Paraná', ['nombre' => 'Paraná']);
+
+        $this->assertSame(['Constructora Paraná Obras S.A.'], $this->nombres($r));
+    }
+
+    public function test_busca_por_nombre_sin_tilde_en_filtro()
+    {
+        $r = $this->buscar('parana', ['nombre' => 'parana']);
+
+        $this->assertSame(['Constructora Paraná Obras S.A.'], $this->nombres($r));
+    }
+
+    public function test_infiere_nombre_cuando_la_ia_no_lo_devuelve()
+    {
+        $r = $this->buscar('TecnoSur', []);
+
+        $this->assertSame(['TecnoSur Informática'], $this->nombres($r));
+        $this->assertSame('tecnosur', $r->json('filtros.nombre'));
+    }
+
+    public function test_infiere_nombre_ambiguo_que_matchea_varios_proveedores()
+    {
+        $r = $this->buscar('constructora', []);
+
+        $nombres = $this->nombres($r);
+        $this->assertContains('Constructora Paraná Obras S.A.', $nombres);
+        $this->assertContains('Vial Constructora del Este', $nombres);
+        $this->assertSame('constructora', $r->json('filtros.nombre'));
+    }
 }

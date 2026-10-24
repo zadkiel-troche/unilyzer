@@ -38,7 +38,7 @@ trait SimulaOpenAi
     protected function filtros(array $cambios = []): array
     {
         return [
-            'texto' => null, 'rubro' => null, 'dependencia' => null, 'tipos_evento' => null,
+            'texto' => null, 'nombre' => null, 'rubro' => null, 'dependencia' => null, 'tipos_evento' => null,
             'categoria' => null, 'desde' => null, 'hasta' => null, 'sin_atrasos' => null,
             'satisfaccion_max' => null, 'puntaje_min' => null, 'puntaje_max' => null,
             'solo_reincidentes' => null, 'orden' => null, 'limite' => 10,

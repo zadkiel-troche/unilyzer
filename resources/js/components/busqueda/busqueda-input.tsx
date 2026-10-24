@@ -52,7 +52,7 @@ export function BusquedaInput({
         <div className={cn('space-y-3', className)}>
             <form role="search" onSubmit={alEnviar} className="relative">
                 <label htmlFor={ID_BUSCADOR} className="sr-only">
-                    Preguntá por un proveedor en lenguaje natural
+                    Buscá por nombre de proveedor o preguntá en lenguaje natural
                 </label>
                 <Search
                     className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground"
@@ -65,7 +65,7 @@ export function BusquedaInput({
                     onChange={(e) => setQ(e.target.value)}
                     autoFocus={autoFocus}
                     autoComplete="off"
-                    placeholder="Ej.: ¿quién cumplió los plazos pero tuvo problemas de calidad?"
+                    placeholder="Ej.: TecnoSur, o ¿quién cumplió los plazos pero tuvo problemas de calidad?"
                     className="h-14 w-full rounded-xl border border-input bg-card pr-32 pl-12 text-base shadow-sm transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40"
                 />
                 <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-2">

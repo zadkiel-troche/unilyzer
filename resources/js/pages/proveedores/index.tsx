@@ -96,7 +96,7 @@ export default function ProveedoresIndex({ proveedores }: Props) {
             <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 md:p-6">
                 <PageHeader
                     title="Proveedores"
-                    description="Preguntá en lenguaje natural. Te mostramos cómo se interpretó la pregunta y qué eventos respaldan cada resultado."
+                    description="Buscá por nombre o preguntá en lenguaje natural. Te mostramos cómo se interpretó la consulta y qué eventos respaldan cada resultado."
                 />
 
                 <BusquedaInput

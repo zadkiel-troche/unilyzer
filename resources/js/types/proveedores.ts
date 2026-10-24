@@ -136,6 +136,7 @@ export type OrdenBusqueda = 'puntaje_asc' | 'puntaje_desc' | 'incidencias_desc';
 
 export type FiltrosBusqueda = {
     texto: string | null;
+    nombre: string | null;
     rubro: string | null;
     dependencia: string | null;
     tipos_evento: TipoEvento[] | null;
