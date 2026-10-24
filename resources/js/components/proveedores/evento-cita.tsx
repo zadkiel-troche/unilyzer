@@ -6,7 +6,7 @@ export function EventoCita({ id }: { id: number }) {
         <button
             type="button"
             onClick={() => irAEvento(id)}
-            className="rounded px-1 font-mono text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="rounded px-1 font-mono text-xs font-medium text-link underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             aria-label={`Ir al evento ${id}`}
         >
             #{id}

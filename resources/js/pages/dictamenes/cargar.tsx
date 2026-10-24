@@ -58,9 +58,9 @@ function Stepper({ actual }: { actual: number }) {
                             className={cn(
                                 'grid size-6 place-items-center rounded-full border text-xs font-semibold',
                                 estado === 'hecho' &&
-                                    'border-primary bg-primary text-primary-foreground',
+                                    'border-brand-teal bg-brand-teal text-neutral-950',
                                 estado === 'actual' &&
-                                    'border-primary text-primary',
+                                    'border-foreground text-foreground',
                                 estado === 'pendiente' &&
                                     'text-muted-foreground',
                             )}

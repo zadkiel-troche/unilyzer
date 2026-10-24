@@ -50,7 +50,7 @@ function Ecualizador() {
             {[0, 180, 90, 270].map((retraso) => (
                 <span
                     key={retraso}
-                    className="voz-barra h-full w-1.5 rounded-full bg-brand-navy"
+                    className="voz-barra h-full w-1.5 rounded-full bg-neutral-950"
                     style={{ animationDelay: `${retraso}ms` }}
                 />
             ))}
@@ -120,8 +120,8 @@ export function ControlesVoz({
                     className={cn(
                         'relative grid size-20 place-items-center rounded-full shadow-2xl transition-all duration-300 focus-visible:ring-4 focus-visible:ring-brand-teal/50 focus-visible:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50',
                         escuchando
-                            ? 'scale-105 bg-brand-teal text-brand-navy shadow-brand-teal/40'
-                            : 'bg-white text-brand-navy shadow-brand-action/30 hover:scale-105',
+                            ? 'scale-105 bg-brand-teal text-neutral-950 shadow-brand-teal/40'
+                            : 'bg-white text-neutral-950 shadow-white/10 hover:scale-105',
                     )}
                 >
                     {escuchando ? (

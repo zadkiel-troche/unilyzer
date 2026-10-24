@@ -58,7 +58,7 @@ function TimelineItem({ evento }: { evento: EventoTimeline }) {
 
                 {evento.extracto_fuente && (
                     <Collapsible className="mt-2">
-                        <CollapsibleTrigger className="group inline-flex items-center gap-1 rounded text-xs font-medium text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                        <CollapsibleTrigger className="group inline-flex items-center gap-1 rounded text-xs font-medium text-link underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                             <Quote className="size-3" aria-hidden />
                             Ver fuente
                             <ChevronDown
@@ -66,7 +66,7 @@ function TimelineItem({ evento }: { evento: EventoTimeline }) {
                                 aria-hidden
                             />
                         </CollapsibleTrigger>
-                        <CollapsibleContent className="mt-2 rounded-md border-l-2 border-brand-action bg-muted/60 px-3 py-2 text-sm">
+                        <CollapsibleContent className="mt-2 rounded-md border-l-2 border-brand-teal bg-muted/60 px-3 py-2 text-sm">
                             <blockquote className="italic">
                                 “{evento.extracto_fuente}”
                             </blockquote>

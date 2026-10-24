@@ -9,8 +9,8 @@ import { dashboard, login } from '@/routes';
 function VistaPrevia() {
     return (
         <div className="relative w-full max-w-lg" aria-hidden>
-            <div className="absolute -inset-6 rounded-[2rem] bg-brand-action/10 blur-2xl dark:bg-brand-teal/10" />
-            <div className="relative space-y-3 rounded-2xl border bg-card p-4 shadow-xl shadow-brand-navy/5">
+            <div className="absolute -inset-6 rounded-[2rem] bg-brand-teal/10 blur-2xl" />
+            <div className="relative space-y-3 rounded-2xl border bg-card p-4 shadow-xl shadow-black/10">
                 <div className="flex items-center gap-3 rounded-xl border bg-background px-4 py-3 text-sm">
                     <Search className="size-4 text-muted-foreground" />
                     <span>
@@ -68,7 +68,7 @@ export default function Welcome() {
                 <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
                     <Link
                         href="/"
-                        className="flex items-center gap-2 text-brand-navy dark:text-white"
+                        className="flex items-center gap-2 text-foreground"
                     >
                         <AppLogoMark className="size-9" />
                         <span className="text-xl font-bold tracking-tight">
@@ -95,7 +95,7 @@ export default function Welcome() {
                             />
                             Historial de proveedores · UNI
                         </p>
-                        <h1 className="text-4xl leading-[1.1] font-semibold tracking-tight text-balance text-brand-navy sm:text-5xl dark:text-white">
+                        <h1 className="texto-degradado text-4xl leading-[1.05] font-semibold tracking-tight text-balance sm:text-6xl">
                             Cada experiencia cuenta.
                         </h1>
                         <p className="max-w-lg text-lg text-pretty text-muted-foreground">
@@ -127,7 +127,7 @@ export default function Welcome() {
                     <ul className="mx-auto grid max-w-6xl gap-8 px-6 py-12 sm:grid-cols-3">
                         {PILARES.map(({ icono: Icono, titulo, texto }) => (
                             <li key={titulo} className="space-y-2">
-                                <span className="grid size-10 place-items-center rounded-xl bg-brand-navy text-brand-teal">
+                                <span className="grid size-10 place-items-center rounded-xl border bg-muted text-brand">
                                     <Icono className="size-5" aria-hidden />
                                 </span>
                                 <h2 className="font-semibold">{titulo}</h2>

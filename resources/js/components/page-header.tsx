@@ -16,7 +16,7 @@ export function PageHeader({ title, description, eyebrow, actions }: Props) {
                         {eyebrow}
                     </div>
                 )}
-                <h1 className="text-2xl font-semibold tracking-tight text-balance">
+                <h1 className="texto-degradado text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                     {title}
                 </h1>
                 {description && (

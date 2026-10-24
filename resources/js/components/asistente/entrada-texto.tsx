@@ -41,7 +41,7 @@ export function EntradaTexto({ onEnviar, deshabilitado }: Props) {
                 type="submit"
                 disabled={deshabilitado || !texto.trim()}
                 aria-label="Enviar"
-                className="grid size-9 place-items-center rounded-full bg-white text-brand-navy transition-transform hover:scale-105 focus-visible:ring-[3px] focus-visible:ring-brand-teal/50 focus-visible:outline-none disabled:opacity-40"
+                className="grid size-9 place-items-center rounded-full bg-white text-neutral-950 transition-transform hover:scale-105 focus-visible:ring-[3px] focus-visible:ring-brand-teal/50 focus-visible:outline-none disabled:opacity-40"
             >
                 <ArrowUp className="size-4" />
             </button>

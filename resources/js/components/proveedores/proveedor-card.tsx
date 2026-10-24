@@ -5,6 +5,7 @@ import { ScoreRing } from '@/components/proveedores/score-ring';
 import { SemaforoBadge } from '@/components/proveedores/semaforo-badge';
 import { etiquetaRubro, TIPOS_EVENTO } from '@/lib/eventos';
 import { formatFecha } from '@/lib/format';
+import { seguirCursor } from '@/lib/spotlight';
 import { show } from '@/routes/proveedores';
 import type { ResultadoBusqueda } from '@/types';
 
@@ -27,12 +28,13 @@ export function ProveedorCard({ resultado }: { resultado: ResultadoBusqueda }) {
             <Link
                 href={show(id)}
                 prefetch
-                className="group flex gap-4 rounded-xl border bg-card p-4 transition-colors hover:border-brand-action/50 hover:bg-accent/40 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none sm:p-5"
+                onMouseMove={seguirCursor}
+                className="spotlight group flex gap-4 rounded-xl border bg-card p-4 transition-colors hover:border-foreground/20 hover:bg-accent/40 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none sm:p-5 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.04)]"
             >
                 <ScoreRing puntaje={puntaje} nivel={semaforo.nivel} size="sm" />
                 <div className="min-w-0 flex-1 space-y-2">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <h3 className="font-semibold group-hover:text-primary">
+                        <h3 className="font-semibold underline-offset-4 group-hover:underline">
                             {nombre}
                         </h3>
                         <SemaforoBadge semaforo={semaforo} />

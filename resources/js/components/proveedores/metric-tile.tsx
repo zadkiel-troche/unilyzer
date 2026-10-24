@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { seguirCursor } from '@/lib/spotlight';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -18,24 +19,30 @@ export function MetricTile({
     tone = 'default',
 }: Props) {
     return (
-        <div className="rounded-xl border bg-card p-4">
-            <div className="flex items-center justify-between gap-2 text-xs font-medium text-muted-foreground">
-                <span>{label}</span>
+        <div
+            onMouseMove={seguirCursor}
+            className="spotlight group rounded-xl border bg-card p-4 transition-colors hover:border-foreground/15 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.04)]"
+        >
+            <div className="flex items-center justify-between gap-2">
+                <span className="etiqueta-seccion">{label}</span>
                 {Icono && (
-                    <Icono
+                    <span
                         className={cn(
-                            'size-4',
-                            tone === 'alerta' && 'text-crit',
+                            'grid size-7 place-items-center rounded-md border bg-muted/60 text-muted-foreground transition-colors group-hover:text-foreground',
+                            tone === 'alerta' &&
+                                'border-crit/25 bg-crit-soft text-crit-foreground group-hover:text-crit-foreground',
                         )}
                         aria-hidden
-                    />
+                    >
+                        <Icono className="size-3.5" />
+                    </span>
                 )}
             </div>
-            <div className="mt-2 text-2xl font-semibold tracking-tight tabular-nums">
+            <div className="mt-3 text-[26px] leading-none font-semibold tracking-tight tabular-nums">
                 {value}
             </div>
             {hint && (
-                <div className="mt-0.5 text-xs text-muted-foreground">
+                <div className="mt-1.5 truncate text-xs text-muted-foreground">
                     {hint}
                 </div>
             )}

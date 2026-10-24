@@ -90,8 +90,8 @@ export function ArchivoDropzone({ onTexto, deshabilitado = false }: Props) {
                 className={cn(
                     'group flex w-full flex-col items-center gap-3 rounded-xl border-2 border-dashed bg-card px-4 py-6 text-center transition-all duration-200 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:cursor-wait',
                     arrastrando
-                        ? 'scale-[1.01] border-primary bg-accent'
-                        : 'hover:border-brand-action/60 hover:bg-accent/40',
+                        ? 'scale-[1.01] border-brand-teal bg-ai-soft'
+                        : 'hover:border-foreground/30 hover:bg-accent/40',
                     error && 'border-crit/40',
                     listo && 'border-ok/40',
                 )}
