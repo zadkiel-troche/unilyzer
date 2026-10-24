@@ -18,7 +18,9 @@ La experiencia con cada proveedor queda dispersa entre las dependencias de la UN
 
 - **Laravel 13** con el starter kit oficial de **React**: Inertia 3, React 19, TypeScript, Tailwind 4, shadcn/ui, Wayfinder y Fortify.
 - **PostgreSQL** en Docker con **Laravel Sail**. Los tests corren en SQLite en memoria.
-- **OpenAI** (`gpt-4.1-mini`), vía `/chat/completions` con Structured Outputs, para la búsqueda en lenguaje natural, la extracción de eventos desde dictámenes y los resúmenes.
+- **OpenAI** (`gpt-4.1-mini`), vía `/chat/completions` con Structured Outputs, para la búsqueda en lenguaje natural, la extracción de eventos desde dictámenes, los resúmenes y el asistente por voz.
+- **Web Speech API** del navegador para hablar con la IA (reconocimiento y lectura en voz alta, sin dependencias).
+- **smalot/pdfparser** para leer dictámenes en PDF.
 - **Claude Code** como asistente de código.
 - **Pest** para los tests.
 
@@ -39,6 +41,8 @@ php artisan key:generate
 
 Abrir <http://localhost> e ingresar con `test@example.com` / `password`.
 
+> Si usás Laravel Herd, el puerto 80 está ocupado: poné `APP_PORT=8080` y `APP_URL=http://localhost:8080` en `.env` y abrí <http://localhost:8080>.
+
 Tests: `php artisan test`.
 
 ## Origen de los datos
@@ -50,21 +54,19 @@ Tests: `php artisan test`.
 
 **Funciona hoy**
 
-- Setup base: Laravel + React, Sail con PostgreSQL y autenticación.
-
-**En desarrollo**
-
-- Modelo de datos y seeders con 10 proveedores ficticios.
-- Evaluación final explicable (plazos, calidad, incidencias, reincidencia) con semáforo.
-- Búsqueda en lenguaje natural con fallback por palabras clave.
-- Historia clínica con línea de tiempo, fuentes y resumen con IA.
-- Carga de dictámenes: extracción de eventos con IA, revisión y guardado.
+- Datos de prueba: 10 proveedores ficticios con contratos, eventos y evaluaciones.
+- Evaluación final explicable (plazos, calidad, incidencias y reincidencia) con semáforo y detección de reincidencias.
+- Búsqueda en lenguaje natural que muestra cómo se interpretó la pregunta y qué eventos respaldan cada resultado. Sin clave de OpenAI, cae a búsqueda por palabras clave y lo avisa.
+- Historia clínica con puntaje explicado, línea de tiempo con la fuente de cada evento, tabla de contratos y resumen con IA que cita los eventos.
+- Carga de dictámenes en PDF, Word, ODT, RTF, HTML o texto: la IA extrae los eventos con su cita textual, el usuario los revisa, agrega los que falten a mano y los guarda.
+- "Hablar con la IA": asistente por voz con respuestas basadas en los registros.
+- Interfaz en español, con modo oscuro y claro.
 
 **Qué sigue**
 
 - Embeddings para búsqueda semántica.
 - Modelo local con Ollama.
-- Carga de PDF.
+- OCR para PDF escaneados.
 - Roles por dependencia.
 - Integración con sistemas de compras.
 

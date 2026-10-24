@@ -2,6 +2,7 @@ import type {
     CargarDictamenProps,
     ConfirmarDictamenPayload,
     ContratoExtraido,
+    ContratoNuevo,
     EventoExtraido,
     ExtraccionDictamen,
 } from '@/types';
@@ -47,9 +48,36 @@ export type Destino = {
     proveedor: string;
     proveedorNuevo: { nombre: string; rubro: string };
     contrato: string;
-    contratoNuevo: ContratoExtraido;
+    contratoNuevo: ContratoNuevo;
     dependencia: string;
+    /** Notas como texto ("" = sin calificar) para los selects. */
+    evaluacion: { calidad: string; satisfaccion: string; comentario: string };
 };
+
+const EVALUACION_VACIA = { calidad: '', satisfaccion: '', comentario: '' };
+
+/** Completa lo extraído por la IA con los campos que solo carga la persona. */
+const completarContrato = (contrato: ContratoExtraido): ContratoNuevo => ({
+    ...contrato,
+    estado: 'en_ejecucion',
+    fecha_fin_real: null,
+});
+
+/** Días de atraso que resultan de las fechas cargadas (igual que Contrato::diasAtraso). */
+export function diasAtraso(
+    pactada: string | null,
+    real: string | null,
+): number | null {
+    if (!pactada || !real) {
+        return null;
+    }
+
+    const dias =
+        (Date.parse(`${real}T00:00:00Z`) - Date.parse(`${pactada}T00:00:00Z`)) /
+        86_400_000;
+
+    return Number.isNaN(dias) ? null : Math.max(0, Math.round(dias));
+}
 
 const normalizar = (texto: string) =>
     texto
@@ -64,14 +92,15 @@ export function destinoVacio(): Destino {
         proveedor: '',
         proveedorNuevo: { nombre: '', rubro: '' },
         contrato: '',
-        contratoNuevo: {
+        contratoNuevo: completarContrato({
             codigo: null,
             objeto: '',
             monto: null,
             fecha_inicio: null,
             fecha_fin_pactada: null,
-        },
+        }),
         dependencia: '',
+        evaluacion: EVALUACION_VACIA,
     };
 }
 
@@ -100,8 +129,9 @@ export function destinoSugerido(
         proveedor: proveedor ? String(proveedor.id) : '',
         proveedorNuevo: { nombre: '', rubro: '' },
         contrato: contrato ? String(contrato.id) : '',
-        contratoNuevo: extraccion.contrato,
+        contratoNuevo: completarContrato(extraccion.contrato),
         dependencia: dependencia ? String(dependencia.id) : '',
+        evaluacion: EVALUACION_VACIA,
     };
 }
 
@@ -120,7 +150,24 @@ export function armarPayload(
         proveedor_id: aId(destino.proveedor),
         proveedor_nuevo: proveedorNuevo ? destino.proveedorNuevo : null,
         contrato_id: contratoNuevo ? null : aId(destino.contrato),
-        contrato_nuevo: contratoNuevo ? destino.contratoNuevo : null,
+        contrato_nuevo: contratoNuevo
+            ? {
+                  ...destino.contratoNuevo,
+                  // Un contrato en ejecución todavía no tiene fecha real de fin.
+                  fecha_fin_real:
+                      destino.contratoNuevo.estado === 'en_ejecucion'
+                          ? null
+                          : destino.contratoNuevo.fecha_fin_real,
+              }
+            : null,
+        evaluacion:
+            destino.evaluacion.calidad && destino.evaluacion.satisfaccion
+                ? {
+                      calidad: Number(destino.evaluacion.calidad),
+                      satisfaccion: Number(destino.evaluacion.satisfaccion),
+                      comentario: destino.evaluacion.comentario.trim() || null,
+                  }
+                : null,
         dependencia_id: aId(destino.dependencia),
         documento_origen: documento.trim(),
         eventos: eventos.map(({ clave: _clave, ...evento }) => evento),

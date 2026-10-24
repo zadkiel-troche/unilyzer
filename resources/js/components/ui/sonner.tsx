@@ -11,7 +11,11 @@ function Toaster({ ...props }: ToasterProps) {
         <Sonner
             theme={appearance}
             className="toaster group"
-            position="bottom-right"
+            // Arriba, debajo del encabezado fijo: abajo tapaba las acciones principales.
+            position="top-right"
+            offset={{ top: 72, right: 16 }}
+            mobileOffset={{ top: 64 }}
+            duration={3500}
             style={
                 {
                     '--normal-bg': 'var(--popover)',

@@ -212,6 +212,14 @@ return [
         'proveedor_nuevo.rubro' => 'rubro',
         'contrato_nuevo.codigo' => 'código del contrato',
         'contrato_nuevo.objeto' => 'objeto del contrato',
+        'contrato_nuevo.monto' => 'monto',
+        'contrato_nuevo.estado' => 'estado del contrato',
+        'contrato_nuevo.fecha_inicio' => 'fecha de inicio',
+        'contrato_nuevo.fecha_fin_pactada' => 'fin pactado',
+        'contrato_nuevo.fecha_fin_real' => 'fin real',
+        'evaluacion.calidad' => 'calidad',
+        'evaluacion.satisfaccion' => 'satisfacción',
+        'evaluacion.comentario' => 'comentario',
     ],
 
 ];

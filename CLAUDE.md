@@ -25,7 +25,8 @@
 - **Node:** ≥ 20.19 (el starter usa Vite+ / `vp`). Con Node 18 falla.
 - **IA:** OpenAI vía `Illuminate\Support\Facades\Http` contra `/chat/completions` con **Structured Outputs** (`response_format: { type: "json_schema", strict: true }`). Sin SDK extra.
 - **Gráficos:** barras simples con divs + Tailwind. No agregar librerías salvo que sea imprescindible.
-- **Sin dependencias nuevas** de Composer ni npm sin acordarlo con el equipo.
+- **Sin dependencias nuevas** de Composer ni npm sin acordarlo con el equipo. Acordadas: `smalot/pdfparser` (leer dictámenes en PDF).
+- **Voz:** Web Speech API del navegador (reconocimiento y lectura en voz alta), sin librerías.
 
 ### Variables de entorno (agregar a `.env.example` sin valores)
 
@@ -157,6 +158,22 @@ Una migración: `create_historial_proveedores_tables`.
 - Prompt: basarse solo en los datos recibidos y citar ids de eventos.
 - Cachear con `Cache::remember` usando como clave el proveedor más el `max(updated_at)` de sus eventos.
 
+### D) `AsistenteService` — "Hablar con la IA"
+
+`responder(string $mensaje, array $historial): array`. Contrato en `resources/js/types/asistente.ts`:
+
+```json
+// Solicitud
+{ "mensaje": "¿Qué pasó con la Constructora Paraná?", "historial": [{ "rol": "usuario|asistente", "texto": "..." }] }
+// Respuesta
+{ "modo": "ia|palabras_clave", "respuesta": "texto apto para leer en voz alta",
+  "proveedores": [{ "id", "nombre", "rubro", "puntaje", "semaforo", "motivo" }], "eventos_citados": [12] }
+```
+
+- La IA recibe una ficha compacta de todos los proveedores (el dataset es chico) y responde en una sola llamada: importa la latencia en voz.
+- `respuesta`: 2-4 oraciones cortas, sin markdown, ids ni símbolos. Los ids devueltos se validan contra la base.
+- Sin IA: responde con la búsqueda por palabras clave (`modo: "palabras_clave"`).
+
 ## 6. Rutas y controladores
 
 Todas dentro del grupo `auth` existente (`routes/web.php`). El usuario de prueba del seeder es `test@example.com` / `password`.
@@ -169,10 +186,14 @@ Todas dentro del grupo `auth` existente (`routes/web.php`). El usuario de prueba
 | POST | `/proveedores/{proveedor}/resumen` | `ProveedorController@resumen` | JSON (ResumenService) |
 | POST | `/busqueda` | `BusquedaController` | JSON (BusquedaService) |
 | GET | `/dictamenes/cargar` | `DictamenController@create` | Inertia `dictamenes/cargar` (proveedores y dependencias para los selects) |
-| POST | `/dictamenes/analizar` | `DictamenController@analizar` | JSON (ExtractorService) |
+| POST | `/dictamenes/extraer-texto` | `Dictamenes\ExtraerTextoController` | JSON `{texto, documento, formato, caracteres}`: lee PDF, DOCX, ODT, RTF, HTML o texto. No guarda el archivo |
+| POST | `/dictamenes/analizar` | `DictamenController@analizar` | JSON (ExtractorService); 503 si no hay IA |
 | POST | `/dictamenes/confirmar` | `DictamenController@confirmar` | Redirect a `proveedores/{id}` con flash |
+| GET | `/asistente` | `AsistenteController@index` | Inertia `asistente` |
+| POST | `/asistente` | `AsistenteController@responder` | JSON (AsistenteService) |
 
-- **`confirmar` recibe:** `{ proveedor_id | null, proveedor_nuevo: {nombre, rubro} | null, contrato_id | null, contrato_nuevo: {...} | null, dependencia_id, documento_origen, eventos: [...] }`. Valida con un FormRequest y guarda los eventos con `extraido_por_ia = true`.
+- **`confirmar` recibe:** `{ proveedor_id | null, proveedor_nuevo: {nombre, rubro} | null, contrato_id | null, contrato_nuevo: {...} | null, dependencia_id, documento_origen, eventos: [...] }`. Valida con `ConfirmarDictamenRequest`. Cada evento trae su propio `extraido_por_ia` (`false` si el usuario lo agregó a mano) y se guarda tal cual.
+- **Formas de las respuestas:** las arma `app/Services/ProveedorPresenter.php` según `resources/js/types/proveedores.ts`. Si cambia una, se cambian los dos juntos.
 - **Props de `proveedores/show`:** `proveedor`, `score` (ScoringService completo), `contratos` (con dependencia, eventos y evaluaciones), `timeline` (todos los eventos ordenados por fecha con el código de contrato).
 - **CSRF en las llamadas JSON:** el frontend usa `fetch` con el header `X-XSRF-TOKEN`, leído de la cookie `XSRF-TOKEN` con `decodeURIComponent`. Crear el helper `resources/js/lib/api.ts` con `postJson<T>(url, body)`.
 

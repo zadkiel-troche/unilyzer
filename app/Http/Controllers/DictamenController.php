@@ -6,9 +6,12 @@ use App\Http\Requests\Dictamenes\ConfirmarDictamenRequest;
 use App\Models\Contrato;
 use App\Models\Dependencia;
 use App\Models\Proveedor;
+use App\Services\Ai\AiUnavailableException;
+use App\Services\Ai\ExtractorService;
 use App\Services\ProveedorPresenter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,12 +35,17 @@ class DictamenController extends Controller
         ]);
     }
 
-    public function analizar(): JsonResponse
+    public function analizar(Request $request, ExtractorService $extractor): JsonResponse
     {
-        // El ExtractorService (IA) llega en el PR de IA.
-        return response()->json([
-            'message' => 'El análisis con IA todavía no está disponible. Podés cargar los eventos a mano.',
-        ], 503);
+        $validado = $request->validate(['texto' => ['required', 'string', 'min:20', 'max:200000']]);
+
+        try {
+            return response()->json($extractor->analizar($validado['texto']));
+        } catch (AiUnavailableException $e) {
+            return response()->json([
+                'message' => 'No se pudo analizar con IA: '.lcfirst($e->getMessage()).' Podés cargar los eventos a mano.',
+            ], 503);
+        }
     }
 
     /**
@@ -63,8 +71,19 @@ class DictamenController extends Controller
                 : $proveedor->contratos()->create([
                     ...$datos['contrato_nuevo'],
                     'dependencia_id' => $datos['dependencia_id'] ?? null,
-                    'estado' => 'en_ejecucion',
+                    'estado' => $datos['contrato_nuevo']['estado'] ?? 'en_ejecucion',
+                    // Un contrato en ejecución todavía no tiene fecha real de fin.
+                    'fecha_fin_real' => ($datos['contrato_nuevo']['estado'] ?? 'en_ejecucion') === 'en_ejecucion'
+                        ? null
+                        : ($datos['contrato_nuevo']['fecha_fin_real'] ?? null),
                 ]);
+
+            if (! empty($datos['evaluacion'])) {
+                $contrato->evaluaciones()->create([
+                    ...$datos['evaluacion'],
+                    'dependencia_id' => $datos['dependencia_id'] ?? null,
+                ]);
+            }
 
             $contrato->eventos()->createMany(array_map(fn (array $evento) => [
                 ...$evento,

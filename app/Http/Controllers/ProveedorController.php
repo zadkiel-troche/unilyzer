@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proveedor;
+use App\Services\Ai\AiUnavailableException;
+use App\Services\Ai\ResumenService;
 use App\Services\ProveedorPresenter;
+use App\Services\ScoringService;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,9 +28,16 @@ class ProveedorController extends Controller
         return Inertia::render('proveedores/show', $presenter->historia($proveedor));
     }
 
-    public function resumen(Proveedor $proveedor): JsonResponse
+    public function resumen(Proveedor $proveedor, ResumenService $resumen, ScoringService $scoring): JsonResponse
     {
-        // El ResumenService (IA) llega en el PR de IA.
-        return response()->json(['message' => 'El resumen con IA todavía no está disponible.'], 503);
+        $proveedor->load(Proveedor::HISTORIA);
+
+        try {
+            return response()->json($resumen->generar($proveedor, $scoring->calcular($proveedor)));
+        } catch (AiUnavailableException $e) {
+            return response()->json([
+                'message' => 'No se pudo generar el resumen con IA: '.lcfirst($e->getMessage()),
+            ], 503);
+        }
     }
 }

@@ -83,12 +83,12 @@ class PaginasTest extends TestCase
                 ->has('dependencias', 6));
     }
 
-    public function test_ai_features_report_unavailable_until_the_ai_is_connected()
+    public function test_ai_features_report_unavailable_without_an_api_key()
     {
         $usuario = User::factory()->create();
         $proveedor = Proveedor::first();
 
         $this->actingAs($usuario)->postJson(route('proveedores.resumen', $proveedor))->assertStatus(503);
-        $this->actingAs($usuario)->postJson(route('dictamenes.analizar'), ['texto' => 'x'])->assertStatus(503);
+        $this->actingAs($usuario)->postJson(route('dictamenes.analizar'), ['texto' => str_repeat('Dictamen de prueba. ', 3)])->assertStatus(503);
     }
 }
