@@ -256,3 +256,13 @@ export type CargarDictamenProps = {
     proveedores: ProveedorOpcion[];
     dependencias: Dependencia[];
 };
+
+// --- Lectura de documentos (POST /dictamenes/extraer-texto) ---
+
+export type TextoExtraido = {
+    texto: string;
+    /** Nombre del archivo sin extensión. */
+    documento: string;
+    formato: string;
+    caracteres: number;
+};

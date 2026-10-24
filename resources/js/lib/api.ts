@@ -28,8 +28,11 @@ function mensajeDeError(status: number, body: unknown): string {
     return 'No se pudo completar la solicitud. Intentá de nuevo.';
 }
 
-/** POST JSON con CSRF de Laravel (cookie XSRF-TOKEN). */
-export async function postJson<T>(url: string, body: unknown = {}): Promise<T> {
+async function enviar<T>(
+    url: string,
+    body: BodyInit,
+    headers: Record<string, string> = {},
+): Promise<T> {
     let response: Response;
 
     try {
@@ -37,12 +40,12 @@ export async function postJson<T>(url: string, body: unknown = {}): Promise<T> {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
-                'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-XSRF-TOKEN': xsrfToken(),
+                ...headers,
             },
-            body: JSON.stringify(body),
+            body,
         });
     } catch {
         throw new ApiError('Sin conexión con el servidor.', 0);
@@ -58,4 +61,16 @@ export async function postJson<T>(url: string, body: unknown = {}): Promise<T> {
     }
 
     return data as T;
+}
+
+/** POST JSON con CSRF de Laravel (cookie XSRF-TOKEN). */
+export function postJson<T>(url: string, body: unknown = {}): Promise<T> {
+    return enviar<T>(url, JSON.stringify(body), {
+        'Content-Type': 'application/json',
+    });
+}
+
+/** POST multipart (archivos). El navegador arma el Content-Type con el boundary. */
+export function postForm<T>(url: string, body: FormData): Promise<T> {
+    return enviar<T>(url, body);
 }

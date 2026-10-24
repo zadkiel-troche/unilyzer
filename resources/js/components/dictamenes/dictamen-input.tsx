@@ -1,12 +1,11 @@
-import { FileUp, ScanSearch } from 'lucide-react';
-import { useRef } from 'react';
-import type { ChangeEvent } from 'react';
-import { toast } from 'sonner';
+import { ScanSearch } from 'lucide-react';
+import { ArchivoDropzone } from '@/components/dictamenes/archivo-dropzone';
 import { FormField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
+import type { TextoExtraido } from '@/types';
 
 const MAX_CARACTERES = 15_000;
 
@@ -27,30 +26,28 @@ export function DictamenInput({
     onAnalizar,
     analizando,
 }: Props) {
-    const archivo = useRef<HTMLInputElement>(null);
-
-    const cargarArchivo = async (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        e.target.value = '';
-
-        if (!file) {
-            return;
-        }
-
-        if (!file.name.toLowerCase().endsWith('.txt')) {
-            toast.error('Por ahora solo se aceptan archivos .txt.');
-
-            return;
-        }
-
-        onTextoChange(await file.text());
-        onDocumentoChange(file.name.replace(/\.txt$/i, ''));
+    const usarArchivo = ({
+        texto: leido,
+        documento: nombre,
+    }: TextoExtraido) => {
+        onTextoChange(leido);
+        onDocumentoChange(nombre);
     };
 
     const recortado = texto.length > MAX_CARACTERES;
 
     return (
         <div className="space-y-4">
+            <ArchivoDropzone onTexto={usarArchivo} deshabilitado={analizando} />
+
+            <div
+                className="flex items-center gap-3 text-xs text-muted-foreground"
+                aria-hidden
+            >
+                <span className="h-px flex-1 bg-border" />o pegá el texto
+                <span className="h-px flex-1 bg-border" />
+            </div>
+
             <FormField
                 id="dictamen-texto"
                 label="Texto del dictamen (anonimizado)"
@@ -86,21 +83,6 @@ export function DictamenInput({
                         className="bg-card"
                     />
                 </FormField>
-                <input
-                    ref={archivo}
-                    type="file"
-                    accept=".txt,text/plain"
-                    className="hidden"
-                    onChange={cargarArchivo}
-                />
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => archivo.current?.click()}
-                >
-                    <FileUp />
-                    Subir .txt
-                </Button>
                 <Button
                     type="button"
                     onClick={onAnalizar}
