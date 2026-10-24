@@ -10,7 +10,10 @@ export type UseAppearanceReturn = {
 };
 
 const listeners = new Set<() => void>();
-let currentAppearance: Appearance = 'system';
+/** Unilyzer usa el modo oscuro hasta que la persona elija otro. */
+const APARIENCIA_POR_DEFECTO: Appearance = 'dark';
+
+let currentAppearance: Appearance = APARIENCIA_POR_DEFECTO;
 
 const prefersDark = (): boolean => {
     if (typeof window === 'undefined') {
@@ -31,10 +34,13 @@ const setCookie = (name: string, value: string, days = 365): void => {
 
 const getStoredAppearance = (): Appearance => {
     if (typeof window === 'undefined') {
-        return 'system';
+        return APARIENCIA_POR_DEFECTO;
     }
 
-    return (localStorage.getItem('appearance') as Appearance) || 'system';
+    return (
+        (localStorage.getItem('appearance') as Appearance) ||
+        APARIENCIA_POR_DEFECTO
+    );
 };
 
 const isDarkMode = (appearance: Appearance): boolean => {
@@ -76,8 +82,8 @@ export function initializeTheme(): void {
     }
 
     if (!localStorage.getItem('appearance')) {
-        localStorage.setItem('appearance', 'system');
-        setCookie('appearance', 'system');
+        localStorage.setItem('appearance', APARIENCIA_POR_DEFECTO);
+        setCookie('appearance', APARIENCIA_POR_DEFECTO);
     }
 
     currentAppearance = getStoredAppearance();
@@ -91,7 +97,7 @@ export function useAppearance(): UseAppearanceReturn {
     const appearance: Appearance = useSyncExternalStore(
         subscribe,
         () => currentAppearance,
-        () => 'system',
+        () => APARIENCIA_POR_DEFECTO,
     );
 
     const resolvedAppearance: ResolvedAppearance = isDarkMode(appearance)

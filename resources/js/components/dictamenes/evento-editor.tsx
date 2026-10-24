@@ -150,7 +150,7 @@ export function EventoEditor({
                             onChange={(e) =>
                                 set('extracto_fuente', e.target.value || null)
                             }
-                            className="min-h-12 border-l-2 border-l-brand-action bg-muted/50 pl-8 italic"
+                            className="min-h-12 border-l-2 border-l-brand-teal bg-muted/50 pl-8 italic"
                         />
                     </div>
                 </FormField>

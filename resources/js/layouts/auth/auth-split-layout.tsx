@@ -20,7 +20,7 @@ export default function AuthSplitLayout({
 }: AuthLayoutProps) {
     return (
         <div className="grid min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-            <aside className="relative hidden flex-col justify-between overflow-hidden bg-brand-navy p-10 text-white lg:flex">
+            <aside className="superficie-marca relative hidden flex-col justify-between overflow-hidden border-r border-white/10 p-10 text-white lg:flex">
                 <div
                     className="pointer-events-none absolute -bottom-40 -left-40 size-[34rem] rounded-full border-[48px] border-white/[0.04]"
                     aria-hidden
@@ -28,7 +28,7 @@ export default function AuthSplitLayout({
                 <Wordmark className="relative flex items-center gap-2.5" />
                 <div className="relative max-w-md space-y-8">
                     <div className="space-y-3">
-                        <p className="text-4xl leading-tight font-semibold tracking-tight">
+                        <p className="texto-degradado text-5xl leading-[1.05] font-semibold tracking-tight">
                             Cada experiencia cuenta.
                         </p>
                         <p className="text-white/70">
@@ -60,7 +60,7 @@ export default function AuthSplitLayout({
             </aside>
 
             <main className="flex flex-col items-center justify-center gap-8 bg-background px-6 py-10">
-                <Wordmark className="flex items-center gap-2 text-brand-navy lg:hidden dark:text-white" />
+                <Wordmark className="flex items-center gap-2 text-foreground lg:hidden" />
                 <div className="w-full max-w-sm space-y-6">
                     <div className="space-y-1.5">
                         <h1 className="text-2xl font-semibold tracking-tight">

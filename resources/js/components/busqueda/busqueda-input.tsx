@@ -1,8 +1,9 @@
 import { ArrowRight, Search } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { ID_BUSCADOR } from '@/hooks/use-atajo-busqueda';
 import { CONSULTAS_EJEMPLO } from '@/lib/busqueda';
 import { cn } from '@/lib/utils';
 
@@ -17,7 +18,7 @@ type Props = {
     className?: string;
 };
 
-/** Buscador en lenguaje natural. Atajo: ⌘K / Ctrl+K para enfocarlo. */
+/** Buscador en lenguaje natural. El atajo ⌘K global lo enfoca (use-atajo-busqueda). */
 export function BusquedaInput({
     onBuscar,
     valorInicial = '',
@@ -28,20 +29,6 @@ export function BusquedaInput({
     className,
 }: Props) {
     const [q, setQ] = useState(valorInicial);
-    const input = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        const alPresionar = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault();
-                input.current?.focus();
-            }
-        };
-
-        window.addEventListener('keydown', alPresionar);
-
-        return () => window.removeEventListener('keydown', alPresionar);
-    }, []);
 
     const enviar = (consulta: string) => {
         const limpia = consulta.trim();
@@ -64,7 +51,7 @@ export function BusquedaInput({
     return (
         <div className={cn('space-y-3', className)}>
             <form role="search" onSubmit={alEnviar} className="relative">
-                <label htmlFor="busqueda" className="sr-only">
+                <label htmlFor={ID_BUSCADOR} className="sr-only">
                     Preguntá por un proveedor en lenguaje natural
                 </label>
                 <Search
@@ -72,8 +59,7 @@ export function BusquedaInput({
                     aria-hidden
                 />
                 <input
-                    ref={input}
-                    id="busqueda"
+                    id={ID_BUSCADOR}
                     type="search"
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
@@ -119,7 +105,7 @@ export function BusquedaInput({
                                 'rounded-full border px-3 py-1 text-xs transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-50',
                                 sobreOscuro
                                     ? 'border-white/15 bg-white/5 text-white hover:border-brand-teal/60 hover:bg-white/10'
-                                    : 'bg-card text-foreground hover:border-brand-action/50 hover:bg-accent',
+                                    : 'bg-card text-foreground hover:border-foreground/30 hover:bg-accent',
                             )}
                         >
                             {ejemplo}

@@ -192,7 +192,7 @@ export function Combobox({
                                     i === activo &&
                                         'bg-accent text-accent-foreground',
                                     esAccion &&
-                                        'mt-1 border-t pt-2 font-medium text-primary',
+                                        'mt-1 border-t pt-2 font-medium text-brand',
                                 )}
                             >
                                 {esAccion ? (

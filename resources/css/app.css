@@ -78,48 +78,50 @@
     /* Origen de la información: IA */
     --color-ai: var(--ai);
     --color-ai-soft: var(--ai-soft);
+
+    /* Roles de color: enlaces en azul, marca en turquesa legible */
+    --color-link: var(--link);
+    --color-brand: var(--brand-text);
 }
 
 /*
- * Paleta de marca (contraste AA verificado):
- * navy #101D35 · turquesa #66E3D0 · acción #3977E8 · nube #F4F7FB · grafito #253247.
- * El azul acción se oscurece a #2F67D4 en fondos de botón (5.2:1 con blanco).
+ * Base neutra negra: el color solo aparece con un significado.
+ *   Neutro (negro/zinc/blanco) → superficies, texto y botones primarios.
+ *   Turquesa #66E3D0           → marca, IA, navegación activa y foco.
+ *   Azul acción                → enlaces.
+ *   Semáforo                   → estado de los proveedores (con ícono y texto).
+ *   Navy #101D35               → solo el recuadro del logo.
+ * Contraste AA verificado en ambos modos. El oscuro es el modo por defecto.
  */
 :root {
-    --background: #f4f7fb;
-    --foreground: #253247;
+    --background: #fafafa;
+    --foreground: #09090b;
     --card: #ffffff;
-    --card-foreground: #253247;
+    --card-foreground: #09090b;
     --popover: #ffffff;
-    --popover-foreground: #253247;
-    --primary: #2f67d4;
-    --primary-foreground: #ffffff;
-    --secondary: #e8eef7;
-    --secondary-foreground: #101d35;
-    --muted: #eaeff6;
-    --muted-foreground: #5b6880;
-    --accent: #eaf1fd;
-    --accent-foreground: #1f4fb0;
+    --popover-foreground: #09090b;
+    --primary: #09090b;
+    --primary-foreground: #fafafa;
+    --secondary: #f4f4f5;
+    --secondary-foreground: #18181b;
+    --muted: #f4f4f5;
+    --muted-foreground: #52525b;
+    --accent: #f4f4f5;
+    --accent-foreground: #18181b;
     --destructive: #b91c1c;
     --destructive-foreground: #b91c1c;
-    --border: #dde4ee;
-    --input: #d3dbe7;
-    --ring: #3977e8;
-    --chart-1: #3977e8;
-    --chart-2: #2bb3a0;
-    --chart-3: #101d35;
+    --border: #e4e4e7;
+    --input: #d4d4d8;
+    --ring: #0f766e;
+    --chart-1: #0f766e;
+    --chart-2: #2f67d4;
+    --chart-3: #52525b;
     --chart-4: #b45309;
     --chart-5: #b91c1c;
     --radius: 0.75rem;
 
-    --sidebar: #101d35;
-    --sidebar-foreground: #c9d3e3;
-    --sidebar-primary: #66e3d0;
-    --sidebar-primary-foreground: #101d35;
-    --sidebar-accent: #1a2a47;
-    --sidebar-accent-foreground: #ffffff;
-    --sidebar-border: #22324f;
-    --sidebar-ring: #66e3d0;
+    --link: #2f67d4;
+    --brand-text: #0f766e;
 
     --ok: #15803d;
     --ok-soft: #e7f6ec;
@@ -136,52 +138,59 @@
 }
 
 .dark {
-    --background: #0a1324;
-    --foreground: #e6ecf5;
-    --card: #101d35;
-    --card-foreground: #e6ecf5;
-    --popover: #101d35;
-    --popover-foreground: #e6ecf5;
-    --primary: #5b92f0;
-    --primary-foreground: #0a1324;
-    --secondary: #1a2a47;
-    --secondary-foreground: #e6ecf5;
-    --muted: #17253f;
-    --muted-foreground: #9aa8bf;
-    --accent: #1a2a47;
-    --accent-foreground: #e6ecf5;
+    --background: #0b0b0d;
+    --foreground: #fafafa;
+    --card: #131316;
+    --card-foreground: #fafafa;
+    --popover: #18181b;
+    --popover-foreground: #fafafa;
+    --primary: #fafafa;
+    --primary-foreground: #0b0b0d;
+    --secondary: #1c1c1f;
+    --secondary-foreground: #fafafa;
+    --muted: #1c1c1f;
+    --muted-foreground: #a1a1aa;
+    --accent: #1c1c1f;
+    --accent-foreground: #fafafa;
     --destructive: #f87171;
     --destructive-foreground: #f87171;
-    --border: #22324f;
-    --input: #2a3b5a;
-    --ring: #5b92f0;
-    --chart-1: #5b92f0;
-    --chart-2: #66e3d0;
-    --chart-3: #c9d3e3;
+    --border: #27272a;
+    --input: #2e2e33;
+    --ring: #66e3d0;
+    --chart-1: #66e3d0;
+    --chart-2: #7aa7f5;
+    --chart-3: #a1a1aa;
     --chart-4: #fbbf24;
     --chart-5: #f87171;
 
-    --sidebar: #0c1730;
-    --sidebar-foreground: #c9d3e3;
-    --sidebar-primary: #66e3d0;
-    --sidebar-primary-foreground: #101d35;
-    --sidebar-accent: #1a2a47;
-    --sidebar-accent-foreground: #ffffff;
-    --sidebar-border: #1d2c48;
-    --sidebar-ring: #66e3d0;
+    --link: #7aa7f5;
+    --brand-text: #66e3d0;
 
     --ok: #4ade80;
-    --ok-soft: rgb(74 222 128 / 0.12);
+    --ok-soft: rgb(74 222 128 / 0.1);
     --ok-foreground: #86efac;
     --warn: #fbbf24;
-    --warn-soft: rgb(251 191 36 / 0.12);
+    --warn-soft: rgb(251 191 36 / 0.1);
     --warn-foreground: #fcd34d;
     --crit: #f87171;
-    --crit-soft: rgb(248 113 113 / 0.12);
+    --crit-soft: rgb(248 113 113 / 0.1);
     --crit-foreground: #fca5a5;
 
     --ai: #66e3d0;
     --ai-soft: rgb(102 227 208 / 0.1);
+}
+
+/* El sidebar es negro en ambos modos: ancla visual de la marca. */
+:root,
+.dark {
+    --sidebar: #050505;
+    --sidebar-foreground: #d4d4d8;
+    --sidebar-primary: #66e3d0;
+    --sidebar-primary-foreground: #050505;
+    --sidebar-accent: #1c1c1f;
+    --sidebar-accent-foreground: #fafafa;
+    --sidebar-border: #1c1c1f;
+    --sidebar-ring: #66e3d0;
 }
 
 @layer base {
@@ -195,11 +204,108 @@
     }
 
     :focus-visible {
-        @apply outline-ring;
+        @apply outline-2 outline-offset-2 outline-ring;
+    }
+
+    ::selection {
+        background: rgb(102 227 208 / 0.3);
+    }
+
+    /* Lienzo principal: un resplandor de marca muy tenue arriba. */
+    .dark [data-slot='sidebar-inset'] {
+        background-image: radial-gradient(
+            70% 320px at 50% 0%,
+            rgb(102 227 208 / 0.05),
+            transparent 100%
+        );
+        background-repeat: no-repeat;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .spotlight::before {
+            transition: none;
+        }
     }
 }
 
 @layer utilities {
+    /*
+     * Superficie de marca: negro con resplandores turquesa y azul sutiles y
+     * una grilla fina. Reemplaza los bloques de color plano.
+     */
+    .superficie-marca {
+        background-color: #050505;
+        background-image:
+            radial-gradient(
+                55% 70% at 85% 0%,
+                rgb(102 227 208 / 0.14),
+                transparent 70%
+            ),
+            radial-gradient(
+                45% 60% at 0% 100%,
+                rgb(57 119 232 / 0.12),
+                transparent 70%
+            ),
+            linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+            linear-gradient(
+                90deg,
+                rgb(255 255 255 / 0.035) 1px,
+                transparent 1px
+            );
+        background-size:
+            auto,
+            auto,
+            32px 32px,
+            32px 32px;
+    }
+
+    /*
+     * Spotlight: un brillo turquesa sigue al cursor sobre tarjetas
+     * interactivas. --x/--y los actualiza `seguirCursor` (lib/spotlight.ts).
+     */
+    .spotlight {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .spotlight::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        background: radial-gradient(
+            420px circle at var(--x, 50%) var(--y, 50%),
+            rgb(102 227 208 / 0.07),
+            transparent 45%
+        );
+        opacity: 0;
+        transition: opacity 300ms ease;
+        pointer-events: none;
+    }
+
+    .spotlight:hover::before {
+        opacity: 1;
+    }
+
+    /* Títulos display con degradado sutil (blanco → zinc en oscuro). */
+    .texto-degradado {
+        background-image: linear-gradient(180deg, #09090b 30%, #52525b);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .dark .texto-degradado,
+    .superficie-marca .texto-degradado {
+        background-image: linear-gradient(180deg, #ffffff 30%, #a1a1aa);
+    }
+
+    /* Etiqueta de sección: ayuda a escanear pantallas densas. */
+    .etiqueta-seccion {
+        @apply text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase;
+    }
+
     /* Resalta brevemente un evento al llegar desde una cita del resumen IA */
     .evento-resaltado {
         animation: evento-resaltado 2.4s ease-out;
@@ -224,16 +330,16 @@
 .voz-escenario {
     background:
         radial-gradient(
-            60% 50% at 50% 42%,
-            rgb(57 119 232 / 0.22),
+            55% 45% at 50% 40%,
+            rgb(57 119 232 / 0.16),
             transparent 70%
         ),
         radial-gradient(
-            40% 35% at 70% 75%,
-            rgb(102 227 208 / 0.12),
+            40% 35% at 70% 78%,
+            rgb(102 227 208 / 0.1),
             transparent 70%
         ),
-        #0b1529;
+        #050505;
 }
 
 .voz-orb {

@@ -57,7 +57,7 @@ function Encabezado({
                                 </Badge>
                             )}
                         </div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-balance">
+                        <h1 className="texto-degradado text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                             {proveedor.nombre}
                         </h1>
                         {proveedor.ruc && (

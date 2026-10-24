@@ -24,7 +24,7 @@ export function Transcripcion({ mensajes }: { mensajes: Mensaje[] }) {
                     <MessagesSquare className="size-3.5" aria-hidden />
                     Transcripción
                     {mensajes.length > 0 && (
-                        <span className="rounded-full bg-brand-teal px-1.5 text-[10px] font-semibold text-brand-navy">
+                        <span className="rounded-full bg-brand-teal px-1.5 text-[10px] font-semibold text-neutral-950">
                             {mensajes.length}
                         </span>
                     )}
@@ -73,7 +73,7 @@ export function Transcripcion({ mensajes }: { mensajes: Mensaje[] }) {
                                 <div className="flex flex-col items-start gap-2">
                                     <OrigenBadge origen="ia" />
                                     {m.respuesta.proveedores.length > 0 && (
-                                        <div className="rounded-xl bg-brand-navy p-2">
+                                        <div className="superficie-marca rounded-xl p-2">
                                             <ProveedoresCitados
                                                 proveedores={
                                                     m.respuesta.proveedores
