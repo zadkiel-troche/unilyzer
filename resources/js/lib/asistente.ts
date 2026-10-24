@@ -5,6 +5,7 @@ export const SUGERENCIAS_VOZ = [
     'Proveedores con reclamos repetidos',
     '¿Qué dependencias tienen más contratos?',
     '¿Cuántos contratos hay por estado?',
+    '¿Qué proveedores trabajan con la Facultad de Ingeniería?',
 ];
 
 /** Cantidad de turnos previos que se envían como contexto. */

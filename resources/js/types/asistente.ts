@@ -31,6 +31,8 @@ export type DependenciaEstadistica = {
     proveedores: number;
     monto_total: number;
     por_estado: Record<EstadoContrato, number>;
+    /** Proveedores que trabajaron con la dependencia, de más a menos contratos. */
+    lista_proveedores: { id: number; nombre: string; contratos: number }[];
 };
 
 export type AsistenteRespuesta = {

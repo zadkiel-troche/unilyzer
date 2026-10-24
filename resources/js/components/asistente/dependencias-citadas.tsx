@@ -80,6 +80,18 @@ export function DependenciasCitadas({
                                         {d.sigla}
                                     </span>
                                 )}
+                                {d.lista_proveedores.length > 0 && (
+                                    <span
+                                        className={cn(
+                                            'mt-0.5 block text-xs font-normal text-pretty',
+                                            atenuado,
+                                        )}
+                                    >
+                                        {d.lista_proveedores
+                                            .map((p) => p.nombre)
+                                            .join(' · ')}
+                                    </span>
+                                )}
                             </th>
                             <td className="px-3 py-2 text-right font-semibold tabular-nums">
                                 {formatNumero(d.contratos)}

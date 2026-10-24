@@ -41,6 +41,36 @@ class EstadisticasAsistenteTest extends TestCase
         $this->assertSame(['en_ejecucion' => 2, 'finalizado' => 25, 'rescindido' => 1], $servicio->contratosPorEstado());
     }
 
+    public function test_each_dependency_lists_its_providers_by_number_of_contracts()
+    {
+        $filas = collect(app(EstadisticasService::class)->porDependencia())->keyBy('sigla');
+
+        $this->assertSame(
+            ['Redes y Datos PY', 'TecnoSur Informática'],
+            array_column($filas['DTIC']['lista_proveedores'], 'nombre'),
+        );
+        $this->assertSame(['nombre' => 'LabQuímica Insumos', 'contratos' => 2], array_intersect_key(
+            $filas['FI']['lista_proveedores'][0],
+            ['nombre' => true, 'contratos' => true],
+        ));
+        $this->assertCount(6, $filas['FI']['lista_proveedores']);
+    }
+
+    public function test_without_ai_it_lists_the_providers_of_a_dependency_by_name_or_acronym()
+    {
+        $this->postJson(route('asistente.responder'), ['mensaje' => '¿Qué proveedores trabajan con la Dirección de TIC?'])
+            ->assertOk()
+            ->assertJsonPath('respuesta', 'Dirección de TIC trabajó con 2 proveedores: Redes y Datos PY (2 contratos) y TecnoSur Informática (2 contratos).')
+            ->assertJsonPath('dependencias.0.sigla', 'DTIC')
+            ->assertJsonCount(2, 'proveedores')
+            ->assertJsonPath('proveedores.1.nombre', 'TecnoSur Informática');
+
+        $this->postJson(route('asistente.responder'), ['mensaje' => 'proveedores de la FI'])
+            ->assertOk()
+            ->assertJsonPath('dependencias.0.sigla', 'FI')
+            ->assertJsonCount(6, 'proveedores');
+    }
+
     public function test_without_ai_it_ranks_dependencies_by_contracts()
     {
         $this->postJson(route('asistente.responder'), ['mensaje' => '¿Qué dependencias tienen más contratos?'])
@@ -87,6 +117,7 @@ class EstadisticasAsistenteTest extends TestCase
 
         Http::assertSent(fn (Request $r) => str_contains($r['messages'][0]['content'], 'Estadísticas por dependencia')
             && str_contains($r['messages'][0]['content'], '"por_estado"')
+            && str_contains($r['messages'][0]['content'], '"lista_proveedores"')
             && isset($r['response_format']['json_schema']['schema']['properties']['dependencias_ids']));
     }
 }

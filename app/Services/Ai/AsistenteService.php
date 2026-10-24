@@ -104,7 +104,7 @@ class AsistenteService
                 : 'No tengo una respuesta para eso. Probá preguntando por un proveedor o un rubro.',
             'proveedores' => array_map(
                 fn (int $id) => $this->presenter->ranking($proveedores[$id], $scores[$id]),
-                array_slice($ids, 0, 4),
+                array_slice($ids, 0, 8),
             ),
             'dependencias' => array_map(fn (int $id) => $dependencias[$id], array_slice($idsDependencias, 0, 6)),
             'eventos_citados' => array_values(array_unique(array_filter(
@@ -151,6 +151,12 @@ class AsistenteService
      */
     private function estadisticaSinIa(string $mensaje): ?array
     {
+        $listado = $this->proveedoresDeDependenciaSinIa($mensaje);
+
+        if ($listado !== null) {
+            return $listado;
+        }
+
         $porDependencia = str_contains($mensaje, 'dependencia');
         $porEstado = str_contains($mensaje, 'estado')
             || (str_contains($mensaje, 'contrato') && preg_match('/ejecucion|finalizad|rescindid|vigente|abiert|cerrad/', $mensaje));
@@ -190,6 +196,45 @@ class AsistenteService
         }
 
         return null;
+    }
+
+    /**
+     * "¿Qué proveedores tiene la Facultad de Ingeniería?" o "proveedores de la DTIC".
+     *
+     * @return Respuesta|null
+     */
+    private function proveedoresDeDependenciaSinIa(string $mensaje): ?array
+    {
+        if (! str_contains($mensaje, 'proveedor')) {
+            return null;
+        }
+
+        $fila = collect($this->estadisticas->porDependencia())->first(function (array $f) use ($mensaje) {
+            $sigla = $f['sigla'] !== null ? BusquedaPorPalabrasClave::normalizar($f['sigla']) : null;
+
+            return str_contains($mensaje, BusquedaPorPalabrasClave::normalizar($f['nombre']))
+                || ($sigla !== null && preg_match('/\b'.preg_quote($sigla, '/').'\b/', $mensaje) === 1);
+        });
+
+        if ($fila === null) {
+            return null;
+        }
+
+        $lista = $fila['lista_proveedores'];
+        $texto = $lista === []
+            ? "{$fila['nombre']} todavía no tiene contratos registrados."
+            : "{$fila['nombre']} trabajó con ".self::cantidad(count($lista), 'proveedor', 'proveedores').': '
+                .collect($lista)->map(fn (array $p) => $p['nombre'].' ('.self::cantidad($p['contratos'], 'contrato', 'contratos').')')->join(', ', ' y ').'.';
+
+        $proveedores = Proveedor::with(Proveedor::HISTORIA)->whereKey(array_column($lista, 'id'))->get()->keyBy('id');
+
+        return [
+            ...$this->respuestaEstadistica($texto, [$fila]),
+            'proveedores' => array_values(array_filter(array_map(
+                fn (array $p) => $proveedores->has($p['id']) ? $this->presenter->ranking($proveedores[$p['id']]) : null,
+                $lista,
+            ))),
+        ];
     }
 
     private static function cantidad(int $n, string $singular, string $plural): string
@@ -265,13 +310,15 @@ class AsistenteService
         - Describí hechos registrados ("tuvo dos multas por atraso"), no juicios definitivos. La decisión final es de las personas.
 
         Devolvé también:
-        - "proveedores_ids": los ids de los proveedores que mencionás, en orden de relevancia (máximo 4).
+        - "proveedores_ids": los ids de los proveedores que mencionás, en orden de relevancia (máximo 8).
         - "dependencias_ids": si la pregunta es sobre dependencias, sus ids en el orden en que las nombrás (máximo 6); si no, [].
         - "eventos_citados": los ids de los eventos en los que te basás.
 
         Para preguntas de conteo (qué dependencias tienen más o menos contratos o proveedores, cuántos contratos hay en
         ejecución, finalizados o rescindidos) usá las estadísticas: "contratos" es la cantidad de contratos, "proveedores"
         la cantidad de proveedores distintos y "por_estado" el desglose. Nombrá las tres primeras y su número.
+        Si preguntan qué proveedores trabajan con una dependencia, usá su "lista_proveedores": nombralos y devolvé sus ids
+        en "proveedores_ids" y el id de la dependencia en "dependencias_ids".
 
         Datos de los proveedores (JSON):
         {$datos}
