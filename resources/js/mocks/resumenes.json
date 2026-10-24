@@ -1,0 +1,115 @@
+{
+    "1": {
+        "resumen": "Constructora Paraná Obras S.A. registra 3 contratos con la UNI por un total de 5.230.000.000 Gs. Los antecedentes incluyen 8 incidencias documentadas (eventos #11, #9, #7).",
+        "fortalezas": [
+            "No se identifican fortalezas destacadas en los registros."
+        ],
+        "alertas": [
+            "3 contratos con atraso (promedio 77.7 días).",
+            "Reincidencia: atraso por plazo en 3 contratos distintos.",
+            "Reincidencia: multa por plazo en 2 contratos distintos.",
+            "Satisfacción promedio baja: 1.7/5.",
+            "Registra una rescisión de contrato."
+        ],
+        "recomendacion": "evitar",
+        "eventos_citados": [11, 9, 7]
+    },
+    "2": {
+        "resumen": "TecnoSur Informática registra 4 contratos con la UNI por un total de 1.735.000.000 Gs. No se registran incidencias negativas en los antecedentes disponibles.",
+        "fortalezas": [
+            "Cumplió los plazos en los 3 contratos finalizados.",
+            "Registra 3 recepciones conformes o ampliaciones justificadas.",
+            "Calidad promedio de 4.7/5 según las dependencias."
+        ],
+        "alertas": ["Sin alertas en los antecedentes disponibles."],
+        "recomendacion": "contratar",
+        "eventos_citados": [14, 13]
+    },
+    "3": {
+        "resumen": "Limpieza Integral Itapúa registra 3 contratos con la UNI por un total de 1.330.000.000 Gs. Los antecedentes incluyen 4 incidencias documentadas (eventos #18, #17, #16).",
+        "fortalezas": ["Cumplió los plazos en los 3 contratos finalizados."],
+        "alertas": [
+            "Reincidencia: reclamo por calidad en 3 contratos distintos.",
+            "Satisfacción promedio baja: 2.7/5."
+        ],
+        "recomendacion": "contratar con condiciones",
+        "eventos_citados": [18, 17, 16]
+    },
+    "4": {
+        "resumen": "Mobiliario del Sur cumplió formalmente sus 3 contratos: todos se entregaron a tiempo y con recepción conforme. Sin embargo, después de la recepción se registraron observaciones técnicas sobre los materiales (eventos #24, #22, #20) y la satisfacción de las dependencias es baja. El cumplimiento de plazos no refleja la calidad de lo entregado.",
+        "fortalezas": [
+            "Cumplió los plazos en los 3 contratos finalizados.",
+            "Registra 3 recepciones conformes o ampliaciones justificadas."
+        ],
+        "alertas": [
+            "Reincidencia: observación técnica por materiales en 2 contratos distintos.",
+            "Satisfacción promedio baja: 2.0/5."
+        ],
+        "recomendacion": "contratar con condiciones",
+        "eventos_citados": [24, 22, 20]
+    },
+    "5": {
+        "resumen": "LabQuímica Insumos registra 3 contratos con la UNI por un total de 341.000.000 Gs. Los antecedentes incluyen 2 incidencias documentadas (eventos #27, #25).",
+        "fortalezas": [
+            "Registra 2 recepciones conformes o ampliaciones justificadas.",
+            "Calidad promedio de 4.3/5 según las dependencias."
+        ],
+        "alertas": [
+            "2 contratos con atraso (promedio 6.5 días).",
+            "Reincidencia: atraso por plazo en 2 contratos distintos."
+        ],
+        "recomendacion": "contratar con condiciones",
+        "eventos_citados": [27, 25]
+    },
+    "6": {
+        "resumen": "Seguridad Total S.R.L. registra 2 contratos con la UNI por un total de 1.030.000.000 Gs. Los antecedentes incluyen 2 incidencias documentadas (eventos #30, #29).",
+        "fortalezas": [
+            "Cumplió los plazos en los 2 contratos finalizados.",
+            "Registra 1 recepciones conformes o ampliaciones justificadas."
+        ],
+        "alertas": ["Satisfacción promedio baja: 2.5/5."],
+        "recomendacion": "contratar con condiciones",
+        "eventos_citados": [30, 29]
+    },
+    "7": {
+        "resumen": "Eléctrica Encarnación registra 2 contratos con la UNI por un total de 525.000.000 Gs. No se registran incidencias negativas en los antecedentes disponibles.",
+        "fortalezas": [
+            "Cumplió los plazos en los 2 contratos finalizados.",
+            "Registra 3 recepciones conformes o ampliaciones justificadas.",
+            "Calidad promedio de 5.0/5 según las dependencias."
+        ],
+        "alertas": ["Sin alertas en los antecedentes disponibles."],
+        "recomendacion": "contratar",
+        "eventos_citados": [34, 33]
+    },
+    "8": {
+        "resumen": "Catering Universitario registra 3 contratos con la UNI por un total de 620.000.000 Gs. Los antecedentes incluyen 3 incidencias documentadas (eventos #38, #37, #36).",
+        "fortalezas": [
+            "Cumplió los plazos en los 2 contratos finalizados.",
+            "Registra 1 recepciones conformes o ampliaciones justificadas."
+        ],
+        "alertas": ["Satisfacción promedio baja: 2.0/5."],
+        "recomendacion": "contratar con condiciones",
+        "eventos_citados": [38, 37, 36]
+    },
+    "9": {
+        "resumen": "Redes y Datos PY registra 2 contratos con la UNI por un total de 375.000.000 Gs. Los antecedentes incluyen 2 incidencias documentadas (eventos #41, #39).",
+        "fortalezas": [
+            "Registra 1 recepciones conformes o ampliaciones justificadas."
+        ],
+        "alertas": ["1 contratos con atraso (promedio 25 días)."],
+        "recomendacion": "contratar con condiciones",
+        "eventos_citados": [41, 39]
+    },
+    "10": {
+        "resumen": "Vial Constructora del Este registra 3 contratos con la UNI por un total de 3.280.000.000 Gs. No se registran incidencias negativas en los antecedentes disponibles.",
+        "fortalezas": [
+            "Cumplió los plazos en los 3 contratos finalizados.",
+            "Registra 3 recepciones conformes o ampliaciones justificadas.",
+            "Calidad promedio de 4.7/5 según las dependencias."
+        ],
+        "alertas": ["Sin alertas en los antecedentes disponibles."],
+        "recomendacion": "contratar",
+        "eventos_citados": [46, 45]
+    }
+}
