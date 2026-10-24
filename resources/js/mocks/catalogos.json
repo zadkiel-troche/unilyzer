@@ -1,0 +1,246 @@
+{
+    "dependencias": [
+        {
+            "id": 1,
+            "nombre": "Facultad de Ingeniería",
+            "sigla": "FI"
+        },
+        {
+            "id": 2,
+            "nombre": "Facultad de Ciencias Médicas",
+            "sigla": "FCM"
+        },
+        {
+            "id": 3,
+            "nombre": "Dirección de Infraestructura",
+            "sigla": "DI"
+        },
+        {
+            "id": 4,
+            "nombre": "Dirección de TIC",
+            "sigla": "DTIC"
+        },
+        {
+            "id": 5,
+            "nombre": "Rectorado",
+            "sigla": "REC"
+        },
+        {
+            "id": 6,
+            "nombre": "Facultad de Ciencias Económicas",
+            "sigla": "FCE"
+        }
+    ],
+    "proveedores": [
+        {
+            "id": 1,
+            "nombre": "Constructora Paraná Obras S.A.",
+            "rubro": "obras",
+            "contratos": [
+                {
+                    "id": 1,
+                    "codigo": "LPN-012/2023",
+                    "objeto": "Construcción del bloque de aulas B de la Facultad de Ingeniería"
+                },
+                {
+                    "id": 2,
+                    "codigo": "LPN-031/2024",
+                    "objeto": "Ampliación del laboratorio de hidráulica"
+                },
+                {
+                    "id": 3,
+                    "codigo": "LPN-007/2025",
+                    "objeto": "Refacción del techo del pabellón de Ciencias Económicas"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "nombre": "TecnoSur Informática",
+            "rubro": "informatica",
+            "contratos": [
+                {
+                    "id": 4,
+                    "codigo": "LCO-044/2023",
+                    "objeto": "Provisión de 120 equipos de escritorio para laboratorios"
+                },
+                {
+                    "id": 5,
+                    "codigo": "LCO-019/2024",
+                    "objeto": "Soporte y mantenimiento de servidores del centro de datos"
+                },
+                {
+                    "id": 6,
+                    "codigo": "LCO-027/2025",
+                    "objeto": "Notebooks para docentes de la Facultad de Ciencias Médicas"
+                },
+                {
+                    "id": 7,
+                    "codigo": "LCO-010/2026",
+                    "objeto": "Renovación de licencias y equipos de red del Rectorado"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "nombre": "Limpieza Integral Itapúa",
+            "rubro": "limpieza",
+            "contratos": [
+                {
+                    "id": 8,
+                    "codigo": "LPN-020/2023",
+                    "objeto": "Servicio de limpieza del campus central"
+                },
+                {
+                    "id": 9,
+                    "codigo": "LPN-005/2024",
+                    "objeto": "Servicio de limpieza de la Facultad de Ciencias Médicas"
+                },
+                {
+                    "id": 10,
+                    "codigo": "LPN-003/2025",
+                    "objeto": "Servicio de limpieza de la Facultad de Ingeniería"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "nombre": "Mobiliario del Sur",
+            "rubro": "mobiliario",
+            "contratos": [
+                {
+                    "id": 11,
+                    "codigo": "LCO-033/2023",
+                    "objeto": "Provisión de 400 pupitres para aulas de grado"
+                },
+                {
+                    "id": 12,
+                    "codigo": "LCO-012/2024",
+                    "objeto": "Mobiliario para la biblioteca central"
+                },
+                {
+                    "id": 13,
+                    "codigo": "LCO-021/2025",
+                    "objeto": "Sillas ergonómicas para oficinas administrativas"
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "nombre": "LabQuímica Insumos",
+            "rubro": "insumos_laboratorio",
+            "contratos": [
+                {
+                    "id": 14,
+                    "codigo": "LCO-051/2023",
+                    "objeto": "Reactivos para laboratorios de química general"
+                },
+                {
+                    "id": 15,
+                    "codigo": "LCO-016/2024",
+                    "objeto": "Insumos de laboratorio clínico para práctica de grado"
+                },
+                {
+                    "id": 16,
+                    "codigo": "LCO-030/2025",
+                    "objeto": "Material de vidrio y equipos menores de laboratorio"
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "nombre": "Seguridad Total S.R.L.",
+            "rubro": "seguridad",
+            "contratos": [
+                {
+                    "id": 17,
+                    "codigo": "LPN-008/2024",
+                    "objeto": "Servicio de vigilancia del campus central"
+                },
+                {
+                    "id": 18,
+                    "codigo": "LPN-004/2025",
+                    "objeto": "Servicio de vigilancia de la Facultad de Ingeniería"
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "nombre": "Eléctrica Encarnación",
+            "rubro": "mantenimiento_electrico",
+            "contratos": [
+                {
+                    "id": 19,
+                    "codigo": "LCO-025/2024",
+                    "objeto": "Mantenimiento de tableros eléctricos de la Facultad de Ingeniería"
+                },
+                {
+                    "id": 20,
+                    "codigo": "LCO-040/2025",
+                    "objeto": "Recableado eléctrico del pabellón de Ciencias Médicas"
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "nombre": "Catering Universitario",
+            "rubro": "alimentos",
+            "contratos": [
+                {
+                    "id": 21,
+                    "codigo": "LPN-015/2024",
+                    "objeto": "Servicio de cafetería de la Facultad de Ciencias Económicas"
+                },
+                {
+                    "id": 22,
+                    "codigo": "LPN-016/2024",
+                    "objeto": "Servicio de cafetería de la Facultad de Ciencias Médicas"
+                },
+                {
+                    "id": 23,
+                    "codigo": "LPN-011/2025",
+                    "objeto": "Servicio de catering para eventos del Rectorado"
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "nombre": "Redes y Datos PY",
+            "rubro": "informatica",
+            "contratos": [
+                {
+                    "id": 24,
+                    "codigo": "LCO-037/2024",
+                    "objeto": "Cableado estructurado del edificio de aulas B"
+                },
+                {
+                    "id": 25,
+                    "codigo": "LCO-018/2025",
+                    "objeto": "Ampliación de la red inalámbrica del campus"
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "nombre": "Vial Constructora del Este",
+            "rubro": "obras",
+            "contratos": [
+                {
+                    "id": 26,
+                    "codigo": "LPN-022/2023",
+                    "objeto": "Pavimentación del acceso norte del campus"
+                },
+                {
+                    "id": 27,
+                    "codigo": "LPN-018/2024",
+                    "objeto": "Estacionamiento de la Facultad de Ciencias Económicas"
+                },
+                {
+                    "id": 28,
+                    "codigo": "LPN-009/2025",
+                    "objeto": "Desagüe pluvial del sector de laboratorios"
+                }
+            ]
+        }
+    ]
+}

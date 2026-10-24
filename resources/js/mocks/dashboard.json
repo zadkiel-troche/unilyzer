@@ -1,0 +1,122 @@
+{
+    "kpis": {
+        "proveedores": 10,
+        "contratos": 28,
+        "monto_total": 15021000000,
+        "reclamos": 8
+    },
+    "criticos": [
+        {
+            "id": 1,
+            "nombre": "Constructora Paraná Obras S.A.",
+            "rubro": "obras",
+            "puntaje": 17,
+            "semaforo": {
+                "nivel": "rojo",
+                "etiqueta": "Crítico"
+            },
+            "motivo": "3 contratos, 3 con atraso, 2 multas, 1 reclamos, 1 obs. técnicas, satisfacción 1.7/5"
+        },
+        {
+            "id": 5,
+            "nombre": "LabQuímica Insumos",
+            "rubro": "insumos_laboratorio",
+            "puntaje": 66,
+            "semaforo": {
+                "nivel": "amarillo",
+                "etiqueta": "Con observaciones"
+            },
+            "motivo": "3 contratos, 2 con atraso, satisfacción 4.0/5"
+        },
+        {
+            "id": 9,
+            "nombre": "Redes y Datos PY",
+            "rubro": "informatica",
+            "puntaje": 68,
+            "semaforo": {
+                "nivel": "amarillo",
+                "etiqueta": "Con observaciones"
+            },
+            "motivo": "2 contratos, 1 con atraso, 1 obs. técnicas, satisfacción 3.5/5"
+        },
+        {
+            "id": 4,
+            "nombre": "Mobiliario del Sur",
+            "rubro": "mobiliario",
+            "puntaje": 70,
+            "semaforo": {
+                "nivel": "amarillo",
+                "etiqueta": "Con observaciones"
+            },
+            "motivo": "3 contratos, 3 obs. técnicas, satisfacción 2.0/5"
+        },
+        {
+            "id": 3,
+            "nombre": "Limpieza Integral Itapúa",
+            "rubro": "limpieza",
+            "puntaje": 71,
+            "semaforo": {
+                "nivel": "amarillo",
+                "etiqueta": "Con observaciones"
+            },
+            "motivo": "3 contratos, 4 reclamos, satisfacción 2.7/5"
+        }
+    ],
+    "confiables": [
+        {
+            "id": 7,
+            "nombre": "Eléctrica Encarnación",
+            "rubro": "mantenimiento_electrico",
+            "puntaje": 98,
+            "semaforo": {
+                "nivel": "verde",
+                "etiqueta": "Confiable"
+            },
+            "motivo": "2 contratos, satisfacción 4.5/5"
+        },
+        {
+            "id": 2,
+            "nombre": "TecnoSur Informática",
+            "rubro": "informatica",
+            "puntaje": 97,
+            "semaforo": {
+                "nivel": "verde",
+                "etiqueta": "Confiable"
+            },
+            "motivo": "4 contratos, satisfacción 4.7/5"
+        },
+        {
+            "id": 10,
+            "nombre": "Vial Constructora del Este",
+            "rubro": "obras",
+            "puntaje": 97,
+            "semaforo": {
+                "nivel": "verde",
+                "etiqueta": "Confiable"
+            },
+            "motivo": "3 contratos, satisfacción 4.7/5"
+        },
+        {
+            "id": 8,
+            "nombre": "Catering Universitario",
+            "rubro": "alimentos",
+            "puntaje": 74,
+            "semaforo": {
+                "nivel": "amarillo",
+                "etiqueta": "Con observaciones"
+            },
+            "motivo": "3 contratos, 2 reclamos, 1 obs. técnicas, satisfacción 2.0/5"
+        },
+        {
+            "id": 6,
+            "nombre": "Seguridad Total S.R.L.",
+            "rubro": "seguridad",
+            "puntaje": 73,
+            "semaforo": {
+                "nivel": "amarillo",
+                "etiqueta": "Con observaciones"
+            },
+            "motivo": "2 contratos, 1 multas, 1 reclamos, satisfacción 2.5/5"
+        }
+    ]
+}
