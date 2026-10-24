@@ -1,5 +1,12 @@
 import { Head, router } from '@inertiajs/react';
-import { Check, FileSearch, Plus, RotateCcw, Save } from 'lucide-react';
+import {
+    Check,
+    FileSearch,
+    PencilLine,
+    Plus,
+    RotateCcw,
+    Save,
+} from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DestinoSelector } from '@/components/dictamenes/destino-selector';
@@ -19,6 +26,7 @@ import { useAnalizarDictamen } from '@/hooks/use-analizar-dictamen';
 import {
     armarPayload,
     desdeExtraccion,
+    destinoVacio,
     destinoSugerido,
     erroresPorEvento,
     eventoManual,
@@ -136,8 +144,6 @@ export default function CargarDictamen(props: CargarDictamenProps) {
         const resultado = await analisis.ejecutar(texto);
 
         if (!resultado) {
-            toast.error('No se pudo analizar el dictamen. Intentá de nuevo.');
-
             return;
         }
 
@@ -148,6 +154,13 @@ export default function CargarDictamen(props: CargarDictamenProps) {
         if (resultado.eventos.length === 0) {
             toast.info('La IA no encontró eventos. Podés agregarlos a mano.');
         }
+    };
+
+    /** Sin IA (o si falló): se cargan los eventos a mano. */
+    const cargarAMano = () => {
+        setEventos([eventoManual()]);
+        setDestino(destinoVacio());
+        setErrores({});
     };
 
     const reiniciar = () => {
@@ -200,8 +213,9 @@ export default function CargarDictamen(props: CargarDictamenProps) {
         );
     };
 
-    const paso = extraccion
-        ? destino?.proveedor && destino.dependencia
+    const enRevision = destino !== null;
+    const paso = enRevision
+        ? destino.proveedor && destino.dependencia
             ? 2
             : 1
         : 0;
@@ -231,7 +245,7 @@ export default function CargarDictamen(props: CargarDictamenProps) {
                                 Usá solo documentos anonimizados.
                             </CardDescription>
                         </div>
-                        {extraccion && (
+                        {enRevision ? (
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -239,6 +253,15 @@ export default function CargarDictamen(props: CargarDictamenProps) {
                             >
                                 <RotateCcw />
                                 Empezar de nuevo
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={cargarAMano}
+                            >
+                                <PencilLine />
+                                Cargar sin IA
                             </Button>
                         )}
                     </CardHeader>
@@ -251,10 +274,27 @@ export default function CargarDictamen(props: CargarDictamenProps) {
                             onAnalizar={analizar}
                             analizando={analisis.cargando}
                         />
+                        {analisis.status === 'error' && !enRevision && (
+                            <div
+                                role="alert"
+                                className="mt-4 flex flex-col gap-3 rounded-lg border border-warn/30 bg-warn-soft p-4 text-sm text-warn-foreground sm:flex-row sm:items-center sm:justify-between"
+                            >
+                                <p>{analisis.error}</p>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={cargarAMano}
+                                    className="shrink-0"
+                                >
+                                    <PencilLine />
+                                    Cargar eventos a mano
+                                </Button>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 
-                {extraccion && destino && (
+                {destino && (
                     <>
                         <Card className="gap-4">
                             <CardHeader className="flex-row items-start justify-between gap-2">
@@ -274,7 +314,11 @@ export default function CargarDictamen(props: CargarDictamenProps) {
                                 </span>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <ResumenExtraccion extraccion={extraccion} />
+                                {extraccion && (
+                                    <ResumenExtraccion
+                                        extraccion={extraccion}
+                                    />
+                                )}
                                 {eventos.length > 0 ? (
                                     <ol className="space-y-3">
                                         {eventos.map((evento, i) => (
