@@ -43,13 +43,13 @@ export default function PasskeyItem({ passkey, onDelete }: Props) {
                         )}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                        Added {passkey.created_at_diff}
+                        Agregada {passkey.created_at_diff}
                         {passkey.last_used_at_diff && (
                             <>
                                 <span className="mx-1 text-muted-foreground/50">
                                     /
                                 </span>
-                                Last used {passkey.last_used_at_diff}
+                                Último uso {passkey.last_used_at_diff}
                             </>
                         )}
                     </p>
@@ -68,22 +68,21 @@ export default function PasskeyItem({ passkey, onDelete }: Props) {
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
-                    <DialogTitle>Remove passkey</DialogTitle>
+                    <DialogTitle>Quitar llave de acceso</DialogTitle>
                     <DialogDescription>
-                        Are you sure you want to remove the "{passkey.name}"
-                        passkey? You will no longer be able to use it to sign
-                        in.
+                        ¿Seguro que querés quitar la llave de acceso “
+                        {passkey.name}”? Ya no vas a poder usarla para ingresar.
                     </DialogDescription>
                     <DialogFooter className="gap-2">
                         <DialogClose asChild>
-                            <Button variant="secondary">Cancel</Button>
+                            <Button variant="secondary">Cancelar</Button>
                         </DialogClose>
                         <Button
                             variant="destructive"
                             onClick={handleDelete}
                             disabled={isDeleting}
                         >
-                            {isDeleting ? 'Removing...' : 'Remove passkey'}
+                            {isDeleting ? 'Quitando…' : 'Quitar llave'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
