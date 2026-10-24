@@ -90,7 +90,7 @@ class ExtractorTextoDocumento
         $rtf = preg_replace('/\{\\\\(?:\*|fonttbl|colortbl|stylesheet|info|pict)[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/s', '', $rtf) ?? $rtf;
         $rtf = preg_replace('/\\\\(?:par|line)\b ?/', "\n", $rtf) ?? $rtf;
         $rtf = preg_replace('/\\\\tab\b ?/', "\t", $rtf) ?? $rtf;
-        $rtf = preg_replace_callback("/\\\\'([0-9a-f]{2})/i", fn ($m) => mb_convert_encoding(chr(hexdec($m[1])), 'UTF-8', 'Windows-1252'), $rtf) ?? $rtf;
+        $rtf = preg_replace_callback("/\\\\'([0-9a-f]{2})/i", fn ($m) => mb_convert_encoding(pack('H2', $m[1]), 'UTF-8', 'Windows-1252'), $rtf) ?? $rtf;
         $rtf = preg_replace_callback('/\\\\u(-?\d+)\??/', fn ($m) => mb_chr(((int) $m[1] + 65536) % 65536, 'UTF-8'), $rtf) ?? $rtf;
         $rtf = preg_replace('/\\\\[a-z]+-?\d* ?/i', '', $rtf) ?? $rtf;
 
