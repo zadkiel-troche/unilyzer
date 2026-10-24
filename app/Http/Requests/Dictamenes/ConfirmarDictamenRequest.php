@@ -31,7 +31,14 @@ class ConfirmarDictamenRequest extends FormRequest
             'contrato_nuevo.objeto' => ['required_with:contrato_nuevo', 'string', 'max:1000'],
             'contrato_nuevo.monto' => ['nullable', 'numeric', 'min:0'],
             'contrato_nuevo.fecha_inicio' => ['nullable', 'date'],
-            'contrato_nuevo.fecha_fin_pactada' => ['nullable', 'date'],
+            'contrato_nuevo.fecha_fin_pactada' => ['nullable', 'date', 'after_or_equal:contrato_nuevo.fecha_inicio'],
+            'contrato_nuevo.estado' => ['nullable', Rule::in(Contrato::ESTADOS)],
+            'contrato_nuevo.fecha_fin_real' => ['nullable', 'date', 'after_or_equal:contrato_nuevo.fecha_inicio'],
+
+            'evaluacion' => ['nullable', 'array'],
+            'evaluacion.calidad' => ['required_with:evaluacion', 'integer', 'between:1,5'],
+            'evaluacion.satisfaccion' => ['required_with:evaluacion', 'integer', 'between:1,5'],
+            'evaluacion.comentario' => ['nullable', 'string', 'max:1000'],
 
             'dependencia_id' => ['nullable', 'integer', 'exists:dependencias,id'],
             'documento_origen' => ['nullable', 'string', 'max:255'],

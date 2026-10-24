@@ -71,8 +71,19 @@ class DictamenController extends Controller
                 : $proveedor->contratos()->create([
                     ...$datos['contrato_nuevo'],
                     'dependencia_id' => $datos['dependencia_id'] ?? null,
-                    'estado' => 'en_ejecucion',
+                    'estado' => $datos['contrato_nuevo']['estado'] ?? 'en_ejecucion',
+                    // Un contrato en ejecución todavía no tiene fecha real de fin.
+                    'fecha_fin_real' => ($datos['contrato_nuevo']['estado'] ?? 'en_ejecucion') === 'en_ejecucion'
+                        ? null
+                        : ($datos['contrato_nuevo']['fecha_fin_real'] ?? null),
                 ]);
+
+            if (! empty($datos['evaluacion'])) {
+                $contrato->evaluaciones()->create([
+                    ...$datos['evaluacion'],
+                    'dependencia_id' => $datos['dependencia_id'] ?? null,
+                ]);
+            }
 
             $contrato->eventos()->createMany(array_map(fn (array $evento) => [
                 ...$evento,

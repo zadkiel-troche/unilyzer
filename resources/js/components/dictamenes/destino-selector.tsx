@@ -1,4 +1,6 @@
 import { Combobox } from '@/components/combobox';
+import { ContratoNuevoCampos } from '@/components/dictamenes/contrato-nuevo-campos';
+import { EvaluacionCampos } from '@/components/dictamenes/evaluacion-campos';
 import { FormField } from '@/components/form-field';
 import { Input } from '@/components/ui/input';
 import { etiquetaRubro } from '@/lib/eventos';
@@ -155,49 +157,19 @@ export function DestinoSelector({
             )}
 
             {esContratoNuevo && (
-                <fieldset className="grid gap-3 rounded-lg border border-dashed p-3 sm:grid-cols-[180px_minmax(0,1fr)] md:col-span-3">
-                    <legend className="px-1 text-xs font-medium">
-                        Datos del contrato nuevo (sugeridos por la IA)
-                    </legend>
-                    <FormField
-                        id="contrato-codigo"
-                        label="Código"
-                        error={errores['contrato_nuevo.codigo']}
-                    >
-                        <Input
-                            id="contrato-codigo"
-                            value={destino.contratoNuevo.codigo ?? ''}
-                            onChange={(e) =>
-                                set({
-                                    contratoNuevo: {
-                                        ...destino.contratoNuevo,
-                                        codigo: e.target.value || null,
-                                    },
-                                })
-                            }
-                            className="bg-card"
-                        />
-                    </FormField>
-                    <FormField
-                        id="contrato-objeto"
-                        label="Objeto"
-                        error={errores['contrato_nuevo.objeto']}
-                    >
-                        <Input
-                            id="contrato-objeto"
-                            value={destino.contratoNuevo.objeto}
-                            onChange={(e) =>
-                                set({
-                                    contratoNuevo: {
-                                        ...destino.contratoNuevo,
-                                        objeto: e.target.value,
-                                    },
-                                })
-                            }
-                            className="bg-card"
-                        />
-                    </FormField>
-                </fieldset>
+                <ContratoNuevoCampos
+                    contrato={destino.contratoNuevo}
+                    onChange={(contratoNuevo) => set({ contratoNuevo })}
+                    errores={errores}
+                />
+            )}
+
+            {(esContratoNuevo || destino.contrato !== '') && (
+                <EvaluacionCampos
+                    evaluacion={destino.evaluacion}
+                    onChange={(evaluacion) => set({ evaluacion })}
+                    errores={errores}
+                />
             )}
         </div>
     );

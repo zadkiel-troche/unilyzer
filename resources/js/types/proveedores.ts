@@ -216,11 +216,26 @@ export type ExtraccionDictamen = {
     eventos: EventoExtraido[];
 };
 
+/** Contrato que se crea al guardar: lo extraído más el estado y la fecha real de fin. */
+export type ContratoNuevo = ContratoExtraido & {
+    estado: EstadoContrato;
+    fecha_fin_real: string | null;
+};
+
+/** Evaluación de la dependencia sobre el contrato (notas de 1 a 5). */
+export type EvaluacionNueva = {
+    calidad: number;
+    satisfaccion: number;
+    comentario: string | null;
+};
+
 export type ConfirmarDictamenPayload = {
     proveedor_id: number | null;
     proveedor_nuevo: { nombre: string; rubro: string } | null;
     contrato_id: number | null;
-    contrato_nuevo: ContratoExtraido | null;
+    contrato_nuevo: ContratoNuevo | null;
+    /** Opcional: se guarda si la dependencia calificó calidad y satisfacción. */
+    evaluacion: EvaluacionNueva | null;
     dependencia_id: number | null;
     documento_origen: string;
     /** `extraido_por_ia` es false en los eventos que el usuario agregó a mano. */
