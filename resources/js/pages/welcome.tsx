@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Lightbulb, Search, Sparkles } from 'lucide-react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import AppLogoMark from '@/components/app-logo-mark';
 import { PILARES } from '@/components/brand-pillars';
 import { Button } from '@/components/ui/button';
 import { dashboard, login } from '@/routes';
@@ -70,8 +70,8 @@ export default function Welcome() {
                         href="/"
                         className="flex items-center gap-2 text-brand-navy dark:text-white"
                     >
-                        <AppLogoIcon className="size-7" />
-                        <span className="text-lg font-semibold tracking-tight">
+                        <AppLogoMark className="size-9" />
+                        <span className="text-xl font-bold tracking-tight">
                             Unilyzer
                         </span>
                     </Link>

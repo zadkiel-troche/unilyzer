@@ -1,44 +1,28 @@
 import type { SVGAttributes } from 'react';
 
 /**
- * Símbolo de Unilyzer: una lente de búsqueda que contiene registros
- * conectados (trazabilidad). El nodo final, en turquesa, es el hallazgo.
+ * Símbolo de Unilyzer: un marco de escaneo con una lupa al centro
+ * (buscar y analizar antecedentes). Usa `currentColor`.
  */
 export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
     return (
         <svg
-            viewBox="0 0 32 32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
             {...props}
         >
-            <circle
-                cx="14"
-                cy="14"
-                r="9.75"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-            />
-            <path
-                d="M21.5 21.5 28 28"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-            />
-            <path
-                d="M9.25 17.25 13 12.25l5 2.75"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.7"
-            />
-            <circle cx="9.25" cy="17.25" r="1.75" fill="currentColor" />
-            <circle cx="13" cy="12.25" r="1.75" fill="currentColor" />
-            <circle cx="18" cy="15" r="2.25" fill="#66E3D0" />
+            <path d="M3.5 8V5.5a2 2 0 0 1 2-2H8" />
+            <path d="M16 3.5h2.5a2 2 0 0 1 2 2V8" />
+            <path d="M20.5 16v2.5a2 2 0 0 1-2 2H16" />
+            <path d="M8 20.5H5.5a2 2 0 0 1-2-2V16" />
+            <circle cx="11.25" cy="11.25" r="3" />
+            <path d="m13.5 13.5 2 2" />
         </svg>
     );
 }

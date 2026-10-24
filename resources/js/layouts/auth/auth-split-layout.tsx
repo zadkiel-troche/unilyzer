@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import AppLogoMark from '@/components/app-logo-mark';
 import { PILARES } from '@/components/brand-pillars';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
@@ -7,10 +7,8 @@ import type { AuthLayoutProps } from '@/types';
 function Wordmark({ className }: { className?: string }) {
     return (
         <Link href={home()} className={className}>
-            <AppLogoIcon className="size-8" />
-            <span className="text-xl font-semibold tracking-tight">
-                Unilyzer
-            </span>
+            <AppLogoMark className="size-9" />
+            <span className="text-xl font-bold tracking-tight">Unilyzer</span>
         </Link>
     );
 }
